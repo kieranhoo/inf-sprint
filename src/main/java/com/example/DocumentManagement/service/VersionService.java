@@ -22,7 +22,7 @@ public class VersionService {
     public List<VersionEntity> getAllVersions(Long documentId)   
     {  
         List<VersionEntity> versions = new ArrayList<VersionEntity>();  
-        versionRepository.findAll().forEach(books1 -> versions.add(books1));  
+        versionRepository.findByDocumentId(documentId).forEach(books1 -> versions.add(books1));  
         return versions;  
     } 
 }
