@@ -34,4 +34,6 @@ public class DocumentController {
     public  ResponseEntity<?> getAllDocuments(){
         return ResponseEntity.ok(documentService.getAllDocuments());
     }
+
+    
 }
