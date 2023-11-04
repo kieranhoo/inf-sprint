@@ -31,4 +31,5 @@ public class VersionEntity extends BaseEntity{
 
     @Column(name = "update_time")
     private Date updateTime;
+    
 }

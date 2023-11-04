@@ -19,12 +19,13 @@ public class DocumentController {
         return ResponseEntity.ok(documentService.helloWorld());
     }
 
-    @PutMapping("")
+    @PostMapping("")
     public ResponseEntity<String> createDocument(@RequestBody UpdateDocumentRequest uploadRequest){
+        uploadRequest.setNameVersion("1.0.0");
         return ResponseEntity.ok(documentService.createDocument(uploadRequest));
     }
 
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateDocument(
             @PathVariable String id,
             @RequestBody UpdateDocumentRequest uploadRequest){

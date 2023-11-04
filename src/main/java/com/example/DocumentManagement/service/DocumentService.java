@@ -2,12 +2,15 @@ package com.example.DocumentManagement.service;
 
 import com.example.DocumentManagement.entity.DocumentEntity;
 import com.example.DocumentManagement.entity.VersionEntity;
+import com.example.DocumentManagement.exception.NotFoundException;
 import com.example.DocumentManagement.repository.DocumentRepository;
 import com.example.DocumentManagement.repository.VersionRepository;
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
 import com.example.DocumentManagement.supportFunction.SupportFunction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.time.LocalTime;
+import java.sql.Date;
 
 import java.util.List;
 import java.sql.Date;
@@ -28,6 +31,8 @@ public class DocumentService extends SupportFunction {
         LocalDateTime currentDateTime = LocalDateTime.now();
         java.util.Date utilDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
+        updateDocumentRequest.setNameVersion("1.0.0");
+
         DocumentEntity documentEntity = documentRepository.save(new DocumentEntity(
                 updateDocumentRequest.getNameDocument(),
                 new Date(utilDate.getTime()),
@@ -43,12 +48,11 @@ public class DocumentService extends SupportFunction {
                 new Date(utilDate.getTime())
         ));
 
-        return "Upload SuccessFully!";
+        return "Create SuccessFully!";
     }
 
     public String updateLoadDocument(UpdateDocumentRequest updateDocumentRequest, String idFromPathVariable) {
         int id = checkRequest(idFromPathVariable);
-
         LocalDateTime currentDateTime = LocalDateTime.now();
         java.util.Date utilDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
@@ -63,11 +67,11 @@ public class DocumentService extends SupportFunction {
                 id,
                 updateDocumentRequest.getUrl(),
                 updateDocumentRequest.getNameVersion(),
-                true,
+                false,
                 new Date(utilDate.getTime())
         ));
 
-        return "Upload SuccessFully!";
+        return "Update Document SuccessFully!";
     }
     public List<DocumentEntity> getAllDocuments(){
         return documentRepository.findAll();
