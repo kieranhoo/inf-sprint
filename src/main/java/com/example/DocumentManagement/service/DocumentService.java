@@ -27,6 +27,8 @@ public class DocumentService extends SupportFunction {
         LocalDateTime currentDateTime = LocalDateTime.now();
         java.util.Date utilDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
+        updateDocumentRequest.setNameVersion("1.0.0");
+
         DocumentEntity documentEntity = documentRepository.save(new DocumentEntity(
                 updateDocumentRequest.getNameDocument(),
                 updateDocumentRequest.getDescription(),
