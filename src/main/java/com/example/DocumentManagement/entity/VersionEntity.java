@@ -15,17 +15,20 @@ import java.sql.Date;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "document")
-public class DocumentEntity extends BaseEntity{
+@Table(name = "version")
+public class VersionEntity extends BaseEntity{
+    @Column(name = "document_id")
+    private Integer documentId;
+
+    @Column(name = "url")
+    private String url;
+
     @Column(name = "name")
     private String name;
 
-    @Column(name = "create_time")
-    private Date createTime;
+    @Column(name = "current_version")
+    private Date currentVersion;
 
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
-
-    @Column(name = "date_deleted")
-    private Date dateDeleted;
+    @Column(name = "update_time")
+    private Date updateTime;
 }
