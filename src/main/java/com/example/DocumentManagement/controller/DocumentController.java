@@ -1,6 +1,6 @@
 package com.example.DocumentManagement.controller;
 
-import com.example.DocumentManagement.request.UrlUploadRequest;
+import com.example.DocumentManagement.request.UpdateDocumentRequest;
 import com.example.DocumentManagement.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,19 @@ public class DocumentController {
     }
 
     @PutMapping("")
-    public ResponseEntity<String> uploadPDF(@RequestBody UrlUploadRequest uploadRequest){
-        return ResponseEntity.ok(documentService.updateLoadDocument(uploadRequest.getUrl()));
+    public ResponseEntity<String> createDocument(@RequestBody UpdateDocumentRequest uploadRequest){
+        return ResponseEntity.ok(documentService.createDocument(uploadRequest));
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<String> updateDocument(
+            @PathVariable String id,
+            @RequestBody UpdateDocumentRequest uploadRequest){
+        return ResponseEntity.ok(documentService.updateLoadDocument(uploadRequest, id));
+    }
+    @GetMapping("")
+    public  ResponseEntity<?> getAllDocuments(){
+        return ResponseEntity.ok(documentService.getAllDocuments());
     }
 
     
