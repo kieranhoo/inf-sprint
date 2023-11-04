@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UrlUploadRequest {
+public class UpdateDocumentRequest {
+    private String nameDocument;
     private String url;
+    private String nameVersion;
+    private String note;
 }
