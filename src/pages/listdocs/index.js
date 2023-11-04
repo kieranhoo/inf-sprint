@@ -1,8 +1,12 @@
+import './index.css'
+
 export default function ListDocs() {
     return (
         <div className="list-docs">
             <div className='text-center'>
-                <h1 className=" font-bold mt-10 mb-10 text-4xl">Documents</h1>
+                <h1 className=" font-bold mt-10 mb-10 text-4xl content">
+                    Government Office <br /> Documents
+                </h1>
             </div>
             <div className=' flex justify-center'>
                 {/* <table className=" w-4/5 text-center">
@@ -20,7 +24,8 @@ export default function ListDocs() {
                             <th>Name</th>
                             <th>Description</th>
                             <th>Version</th>
-                            <th>Link</th>
+                            <th>Download</th>
+                            <th>Time</th>
                         </tr>
                     </thead>
                     <tbody>
