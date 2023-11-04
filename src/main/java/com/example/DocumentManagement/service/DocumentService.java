@@ -15,7 +15,7 @@ public class DocumentService {
     }
 
     public String updateLoadDocument(String url) {
-        documentRepository.save(new DocumentEntity(url, "random"));
+        documentRepository.save(new DocumentEntity(url, null, false,null));
 
         return "Upload SuccessFully!";
     }
