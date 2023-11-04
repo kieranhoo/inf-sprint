@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UrlUploadRequest {
+public class UpdateVersion {
     private String url;
 }

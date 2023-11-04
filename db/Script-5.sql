@@ -5,6 +5,7 @@ CREATE DATABASE IF NOT exists document_management;
 CREATE TABLE IF NOT EXISTS document_management.document(
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
 	name varchar(30),
+	description varchar(300),
 	create_time Date,
 	is_deleted boolean,
 	date_deleted Date

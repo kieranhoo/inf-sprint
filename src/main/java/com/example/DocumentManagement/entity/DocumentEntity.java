@@ -23,6 +23,9 @@ public class DocumentEntity extends BaseEntity{
     @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
     @Column(name = "create_time")
     private String createTime;

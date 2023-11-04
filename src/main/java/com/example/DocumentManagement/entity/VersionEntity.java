@@ -31,7 +31,6 @@ public class VersionEntity extends BaseEntity{
     private String name;
 
     @Column(name = "current_version")
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private String currentVersion;
 
     @Column(name = "update_time")
