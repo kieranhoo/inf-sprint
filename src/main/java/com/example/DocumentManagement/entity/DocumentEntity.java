@@ -10,6 +10,9 @@ import lombok.Setter;
 
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+
 @Getter
 @Setter
 @Entity
@@ -20,12 +23,14 @@ public class DocumentEntity extends BaseEntity{
     @Column(name = "name")
     private String name;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
     @Column(name = "create_time")
-    private Date createTime;
+    private String createTime;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", shape = Shape.STRING)
     @Column(name = "date_deleted")
-    private Date dateDeleted;
+    private String dateDeleted;
 }

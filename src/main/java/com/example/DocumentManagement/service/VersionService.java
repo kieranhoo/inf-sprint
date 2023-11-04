@@ -24,5 +24,9 @@ public class VersionService {
         List<VersionEntity> versions = new ArrayList<VersionEntity>();  
         versionRepository.findByDocumentId(documentId).forEach(books1 -> versions.add(books1));  
         return versions;  
+    }
+
+    public VersionEntity getVersionById(Long documentId, Long versionId) {
+        return versionRepository.findByDocumentIdAndId(documentId, versionId);
     } 
 }
