@@ -23,4 +23,6 @@ public class DocumentController {
     public ResponseEntity<String> uploadPDF(@RequestBody UrlUploadRequest uploadRequest){
         return ResponseEntity.ok(documentService.updateLoadDocument(uploadRequest.getUrl()));
     }
+
+    
 }
