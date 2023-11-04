@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateDocumentRequest {
     private String nameDocument;
+    private String description;
     private String url;
     private String nameVersion;
     private String note;
