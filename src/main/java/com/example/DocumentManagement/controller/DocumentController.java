@@ -1,5 +1,6 @@
 package com.example.DocumentManagement.controller;
 
+import com.example.DocumentManagement.request.UpdateVersion;
 import com.example.DocumentManagement.request.UrlUploadRequest;
 import com.example.DocumentManagement.service.DocumentService;
 import lombok.RequiredArgsConstructor;
@@ -23,4 +24,9 @@ public class DocumentController {
     public ResponseEntity<String> uploadPDF(@RequestBody UrlUploadRequest uploadRequest){
         return ResponseEntity.ok(documentService.updateLoadDocument(uploadRequest.getUrl()));
     }
+
+    @PutMapping("/{documentID}")
+    public ResponseEntity<String> updateDocument(@PathVariable String documentID, @RequestBody UpdateVersion uploadRequest){
+       return ResponseEntity.ok(documentService.updateDocument(null, documentID, documentID));
+    }  
 }

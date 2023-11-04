@@ -27,8 +27,9 @@ public class VersionEntity extends BaseEntity{
     private String name;
 
     @Column(name = "current_version")
-    private Date currentVersion;
+    private Boolean currentVersion;
 
     @Column(name = "update_time")
     private Date updateTime;
+    
 }
