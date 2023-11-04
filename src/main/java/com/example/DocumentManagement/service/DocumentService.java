@@ -29,6 +29,7 @@ public class DocumentService extends SupportFunction {
 
         DocumentEntity documentEntity = documentRepository.save(new DocumentEntity(
                 updateDocumentRequest.getNameDocument(),
+                updateDocumentRequest.getDescription(),
                 new Date(utilDate.getTime()),
                 false,
                 null
@@ -53,6 +54,7 @@ public class DocumentService extends SupportFunction {
 
         documentRepository.save(new DocumentEntity(
                 updateDocumentRequest.getNameDocument(),
+                updateDocumentRequest.getDescription(),
                 new Date(utilDate.getTime()),
                 false,
                 null
