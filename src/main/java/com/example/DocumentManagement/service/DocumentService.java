@@ -9,6 +9,7 @@ import com.example.DocumentManagement.supportFunction.SupportFunction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -67,5 +68,8 @@ public class DocumentService extends SupportFunction {
         ));
 
         return "Upload SuccessFully!";
+    }
+    public List<DocumentEntity> getAllDocuments(){
+        return documentRepository.findAll();
     }
 }

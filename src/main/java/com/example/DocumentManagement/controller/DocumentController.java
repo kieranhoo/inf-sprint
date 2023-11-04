@@ -30,4 +30,8 @@ public class DocumentController {
             @RequestBody UpdateDocumentRequest uploadRequest){
         return ResponseEntity.ok(documentService.updateLoadDocument(uploadRequest, id));
     }
+    @GetMapping("")
+    public  ResponseEntity<?> getAllDocuments(){
+        return ResponseEntity.ok(documentService.getAllDocuments());
+    }
 }
