@@ -10,7 +10,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin
@@ -26,4 +26,4 @@ services:
 networks:
   bridge:
 volumes:
-  data:
+  mysql:

@@ -1,0 +1,32 @@
+name: Build API Server
+
+on:
+  push:
+    branches:
+      - stag
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Okteto Cli
+        run: curl https://get.okteto.com -sSfL | sh
+
+      - name: Use default Context
+        run: okteto context --token ${{RUNNER}} use
+
+      - name: deploy
+        run: okteto deploy
