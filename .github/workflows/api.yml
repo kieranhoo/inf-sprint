@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v2
 
   deploy:
+    needs: build
     name: Deploy
     runs-on: ubuntu-latest
 
@@ -26,7 +27,7 @@ jobs:
         run: curl https://get.okteto.com -sSfL | sh
 
       - name: Use default Context
-        run: okteto context --token ${{RUNNER}} use
+        run: okteto context --token ${{secrets.RUNNER}} use
 
       - name: deploy
         run: okteto deploy
