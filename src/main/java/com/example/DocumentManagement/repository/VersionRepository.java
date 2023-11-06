@@ -12,6 +12,9 @@ public interface VersionRepository extends JpaRepository<VersionEntity, Integer>
     @Query(value = "SELECT * FROM version where document_id = ?1", nativeQuery = true)
     List<VersionEntity> findByDocumentId(int documentId);
 
+    @Query(value = "SELECT * FROM version where id = ?1", nativeQuery = true)
+    VersionEntity findById(int id);
+
     @Query(value = "SELECT * FROM version where document_id = ?1 and current_version = true", nativeQuery = true)
     List<VersionEntity> findByDocumentIdAndCurrentVersionTrue(int documentId);
 

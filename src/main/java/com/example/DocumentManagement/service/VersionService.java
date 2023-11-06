@@ -21,4 +21,9 @@ public class VersionService extends SupportFunction {
 
         return new ListResponse(listVersion);
     }
+
+    public VersionEntity getOneVersion(String idFromPathVariable) {
+        int id = checkRequest(idFromPathVariable);
+        return versionRepository.findById(id);
+    }
 }
