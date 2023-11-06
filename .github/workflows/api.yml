@@ -7,12 +7,26 @@ on:
 
 jobs:
   build:
-    name: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: maven
+
+      - name: Build Initial with Maven
+        working-directory: ./server
+        run: ./mvnw --batch-mode clean package
+
+      - name: Build Complete with Maven
+        working-directory: ./server
+        run: ls
 
   deploy:
     needs: build
