@@ -3,6 +3,7 @@ package com.example.DocumentManagement.service;
 import com.example.DocumentManagement.entity.VersionEntity;
 import com.example.DocumentManagement.repository.VersionRepository;
 import com.example.DocumentManagement.response.ListResponse;
+import com.example.DocumentManagement.response.MessageResponse;
 import com.example.DocumentManagement.supportFunction.SupportFunction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,9 @@ public class VersionService extends SupportFunction {
     public VersionEntity getOneVersion(String idFromPathVariable) {
         int id = checkRequest(idFromPathVariable);
         return versionRepository.findById(id);
+    }
+
+    public MessageResponse helloWorld(){
+        return new MessageResponse("Hello World!!!!!!!!!!!!!!!!");
     }
 }

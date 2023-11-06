@@ -2,6 +2,7 @@ package com.example.DocumentManagement.controller;
 
 import com.example.DocumentManagement.entity.VersionEntity;
 import com.example.DocumentManagement.response.ListResponse;
+import com.example.DocumentManagement.response.MessageResponse;
 import com.example.DocumentManagement.service.VersionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,12 @@ public class VersionController {
             @PathVariable(name = "id") String id
     ){
         return ResponseEntity.ok(versionService.getOneVersion(id));
+    }
+
+    @GetMapping("/hello-world")
+    public ResponseEntity<MessageResponse> helloWorld(
+            @PathVariable(name = "id") String id
+    ){
+        return ResponseEntity.ok(versionService.helloWorld());
     }
 }
