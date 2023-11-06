@@ -2,27 +2,23 @@ package com.example.DocumentManagement.service;
 
 import com.example.DocumentManagement.entity.VersionEntity;
 import com.example.DocumentManagement.repository.VersionRepository;
+import com.example.DocumentManagement.response.ListResponse;
+import com.example.DocumentManagement.supportFunction.SupportFunction;
 import lombok.RequiredArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class VersionService {
+public class VersionService extends SupportFunction {
     private final VersionRepository versionRepository;
 
-    public String helloWorld() {
-        return "Hello world, this is Service";
-    }
+    public ListResponse getAllVersions(String documentIdFromParam) {
+        int documentId = checkRequest(documentIdFromParam);
 
-    public List<VersionEntity> getAllVersions(Long documentId)   
-    {  
-        List<VersionEntity> versions = new ArrayList<VersionEntity>();  
-        versionRepository.findByDocumentId(documentId).forEach(books1 -> versions.add(books1));  
-        return versions;  
-    } 
+        List<VersionEntity> listVersion = versionRepository.findByDocumentId(documentId);
+
+        return new ListResponse(listVersion);
+    }
 }

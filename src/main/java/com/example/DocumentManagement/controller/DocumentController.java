@@ -1,6 +1,8 @@
 package com.example.DocumentManagement.controller;
 
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
+import com.example.DocumentManagement.response.MessageResponse;
+import com.example.DocumentManagement.response.PageResponse;
 import com.example.DocumentManagement.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,27 +16,25 @@ public class DocumentController {
     @Autowired
     private DocumentService documentService;
 
-    @GetMapping("/hello-world")
-    public ResponseEntity<String> helloWorld(){
-        return ResponseEntity.ok(documentService.helloWorld());
-    }
-
     @PostMapping("")
-    public ResponseEntity<String> createDocument(@RequestBody UpdateDocumentRequest uploadRequest){
-        uploadRequest.setNameVersion("1.0.0");
+    public ResponseEntity<MessageResponse> createDocument(@RequestBody UpdateDocumentRequest uploadRequest) {
         return ResponseEntity.ok(documentService.createDocument(uploadRequest));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateDocument(
+    public ResponseEntity<MessageResponse> updateDocument(
             @PathVariable String id,
-            @RequestBody UpdateDocumentRequest uploadRequest){
-        return ResponseEntity.ok(documentService.updateLoadDocument(uploadRequest, id));
-    }
-    @GetMapping("")
-    public  ResponseEntity<?> getAllDocuments(){
-        return ResponseEntity.ok(documentService.getAllDocuments());
+            @RequestBody UpdateDocumentRequest uploadRequest) {
+        return ResponseEntity.ok(documentService.updateDocument(uploadRequest, id));
     }
 
-    
+    @GetMapping("")
+    public ResponseEntity<PageResponse> getAllDocuments(
+            @RequestParam(name = "page") String page,
+            @RequestParam(name = "size") String size
+    ) {
+        return ResponseEntity.ok(documentService.getAllDocuments(page, size));
+    }
+
+
 }

@@ -13,4 +13,26 @@ public class SupportFunction {
             throw new BadRequestException("Request must be a Integer");
         }
     }
+
+    public int checkPage(String pageFromParam) {
+        if (pageFromParam == null || pageFromParam.equals("")) {
+            return 1;
+        }
+        try {
+            return Integer.parseInt(pageFromParam);
+        } catch (Exception e) {
+            return 1;
+        }
+    }
+
+    public int checkSize(String sizeFromParam) {
+        if (sizeFromParam == null || sizeFromParam.equals("")) {
+            return 10;
+        }
+        try {
+            return Integer.parseInt(sizeFromParam);
+        } catch (Exception e) {
+            return 10;
+        }
+    }
 }

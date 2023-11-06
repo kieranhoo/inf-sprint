@@ -1,27 +1,24 @@
 package com.example.DocumentManagement.controller;
 
-import com.example.DocumentManagement.entity.DocumentEntity;
-import com.example.DocumentManagement.entity.VersionEntity;
-import com.example.DocumentManagement.request.UrlUploadRequest;
+import com.example.DocumentManagement.response.ListResponse;
 import com.example.DocumentManagement.service.VersionService;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/api/v1/document")
+@RequestMapping("/api/v1/version")
 @RequiredArgsConstructor
 public class VersionController {
     @Autowired
     private VersionService versionService;
 
-    @GetMapping("/{documentId}/version")
-    public ResponseEntity<List<VersionEntity>> getDocumentVersions(@PathVariable("documentId") Long documentId) {
+    @GetMapping("{document-id}")
+    public ResponseEntity<ListResponse> getDocumentVersions(
+            @PathVariable(name = "document-id") String documentId
+    ) {
         return ResponseEntity.ok(versionService.getAllVersions(documentId));
     }
 }
