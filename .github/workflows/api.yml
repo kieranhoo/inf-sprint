@@ -26,7 +26,7 @@ jobs:
 
       - name: Build Complete with Maven
         working-directory: ./server
-        run: ls
+        run: ls target
 
   deploy:
     needs: build
