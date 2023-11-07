@@ -26,12 +26,23 @@ export const DocDetail = () => {
                     file: version.url,
                     department: data.department.name,
                     currentVersion: version.currentVersion,
+                    note: version.note,
+                    versionId: version.id,
                 };
                 if (version.currentVersion) {
                     setSelectedVersion(ret);
                 }
                 return ret;
             })
+            versions.sort((a, b) => {
+                if (a.versionId < b.versionId) {
+                    return 1;
+                }
+                if (a.versionId > b.versionId) {
+                    return -1;
+                }
+                return 0;
+            });
             setDocuments(versions);
             setIsLoading(false);
         };
@@ -47,11 +58,12 @@ export const DocDetail = () => {
                 <><div className="mb-4">
                     <label className="block text-sm font-medium text-gray-600 mb-1">Select Version:</label>
                     <select className="border border-gray-300 p-2 rounded-md w-full" onChange={handleVersionChange}>
-                        {documents.map((doc) => (
-                            <option key={doc.version} value={doc.version}>
-                                Version {doc.version} - {doc.time}
-                            </option>
-                        ))}
+                        {documents.map((doc) => {
+                            if (doc.currentVersion) {
+                                return <option value={doc.version} key={doc.version} selected>{doc.version}</option>
+                            }
+                            return <option value={doc.version} key={doc.version}>{doc.version}</option>
+                        })}
                     </select>
                 </div>
                     <div className="shadow-md p-5 rounded-md bg-white">
@@ -64,6 +76,12 @@ export const DocDetail = () => {
                                 <div className="mb-2">Description:</div>
                                 <div className="mb-2">{selectedVersion.description}</div>
                                 <div className="mb-2">Department: {selectedVersion.department}</div>
+                                {selectedVersion.note && (
+                                    <>
+                                        <div className="mb-2">Note:</div>
+                                        <div className="mb-2">{selectedVersion.note}</div>
+                                    </>
+                                )}
                             </div>
                         ) : (
                             <div className="text-center">No versions found</div>
