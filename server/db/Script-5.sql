@@ -36,14 +36,75 @@ CREATE TABLE if not exists document_management.user (
     department_id INTEGER
 );
 
+CREATE TABLE IF NOT EXISTS document_management.users (
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	user_name VARCHAR(30) NOT null UNIQUE,
+	email VARCHAR(100) NOT null UNIQUE,
+	pass VARCHAR(255) NOT NULL,
+	is_deleted BOOLEAN NOT NULL default false,
+	date_deleted DATE
+);
+
+CREATE TABLE IF NOT EXISTS document_management.roles (
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	role VARCHAR(20) not null
+);
+
+CREATE table IF NOT EXISTS document_management.user_role (
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	user_id INTEGER,
+	role_id INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS document_management.token(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	token VARCHAR(255) not null UNIQUE,
+	token_type_id INTEGER not null ,
+	revoked boolean,
+	expired boolean,
+	user_id INTEGER not null,
+    token_category_id INTEGER not null
+);
+CREATE TABLE IF NOT EXISTS document_management.token_type(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	token_type_name VARCHAR(100) not null UNIQUE
+);
+CREATE TABLE IF NOT EXISTS document_management.token_category(
+	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	token_category_name VARCHAR(100) not null UNIQUE
+);
+
 alter table document_management.version
 add constraint fk_document_id_version foreign key (document_id) references document(id);
+
+ALTER TABLE document_management.user_role
+ADD CONSTRAINT fk_user_id_user_role FOREIGN KEY (user_id) REFERENCES users(id),
+ADD CONSTRAINT fk_role_id_user_role FOREIGN KEY (role_id) REFERENCES roles(id);
+
+ALTER TABLE document_management.token
+ADD CONSTRAINT fk_token_type_id FOREIGN KEY (token_type_id) REFERENCES token_type(id),
+ADD CONSTRAINT fk_token_user_id FOREIGN KEY (user_id) REFERENCES users(id),
+ADD CONSTRAINT fk_token_category_id FOREIGN KEY (token_category_id) REFERENCES token_category(id);
 
 alter table document_management.document
 add constraint fk_dep_id_document foreign key (department_id) references department(id);
 
 alter table document_management.user
 add constraint fk_user_id_document foreign key (department_id) references department(id);
+
+INSERT INTO document_management.roles (id,role)
+VALUES
+(1,'ADMIN'),
+(2,'EMPLOYEE');
+	
+INSERT INTO document_management.token_type (id,token_type_name)
+VALUES
+(1,'BEARER');
+
+INSERT INTO document_management.token_category (id,token_category_name)
+VALUES
+(1,'ACCESS'),
+(2,'REFRESH');
 
 -- Insert 10 dummy records into the 'department' table
 INSERT INTO document_management.department (name, description)
