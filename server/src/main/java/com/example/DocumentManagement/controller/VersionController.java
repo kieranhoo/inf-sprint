@@ -33,7 +33,6 @@ public class VersionController {
 
     @GetMapping("/hello-world")
     public ResponseEntity<MessageResponse> helloWorld(
-            @PathVariable(name = "id") String id
     ){
         return ResponseEntity.ok(versionService.helloWorld());
     }
