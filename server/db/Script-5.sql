@@ -69,20 +69,20 @@ VALUES
 -- Insert 10 dummy records into the 'version' table
 INSERT INTO document_management.version (document_id, url, name, note, current_version, update_time)
 VALUES
-    (1, 'https://example.com/version/1', 'Version 1', 'Initial version', false, '2023-11-01'),
-    (1, 'https://example.com/version/2', 'Version 2', 'Updated content', true, '2023-11-02'),
-    (2, 'https://example.com/version/1', 'Version 1', 'Initial version', false, '2023-11-02'),
-    (2, 'https://example.com/version/2', 'Version 2', 'Updated content 1', false, '2023-11-02'),
-    (2, 'https://example.com/version/3', 'Version 3', 'Updated content 2', true, '2023-11-02'),
-    (3, 'https://example.com/version/1', 'Version 1', 'Initial version', false, '2023-11-03'),
-    (3, 'https://example.com/version/2', 'Version 2', 'Updated content ALA', true, '2023-11-03'),
-    (4, 'https://example.com/version/1', 'Version 1', 'Initial version', true, '2023-11-04'),
-    (5, 'https://example.com/version/1', 'Version 1', 'Initial version', true, '2023-11-05'),
-    (6, 'https://example.com/version/1', 'Version 1', 'Initial version', true, '2023-11-06'),
-    (7, 'https://example.com/version/1', 'Version 1', 'Initial version', true, '2023-11-07'),
-    (8, 'https://example.com/version/1', 'Version 1', 'Initial version', true, '2023-11-08'),
-    (9, 'https://example.com/version/1', 'Version 1', 'Initial version', true, '2023-11-09'),
-    (10, 'https://example.com/version/1', 'Version 1', 'Initial version', true, '2023-11-10');
+    (1, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', false, '2023-11-01'),
+    (1, 'https://example.com/version/2', 'Version 2.0.0', 'Updated content', true, '2023-11-02'),
+    (2, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', false, '2023-11-02'),
+    (2, 'https://example.com/version/2', 'Version 2.0.0', 'Updated content 1', false, '2023-11-02'),
+    (2, 'https://example.com/version/3', 'Version 3.0.0', 'Updated content 2', true, '2023-11-02'),
+    (3, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', false, '2023-11-03'),
+    (3, 'https://example.com/version/2', 'Version 2.0.0', 'Updated content ALA', true, '2023-11-03'),
+    (4, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-04'),
+    (5, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-05'),
+    (6, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-06'),
+    (7, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-07'),
+    (8, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-08'),
+    (9, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-09'),
+    (10, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-10');
 
 INSERT INTO document_management.user (name, email, username, department_id)
 VALUES

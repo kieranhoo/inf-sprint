@@ -28,6 +28,12 @@ public class VersionService extends SupportFunction {
         return versionRepository.findById(id);
     }
 
+    public MessageResponse getLatestVersionByDocumentId(String idFromPathVariable) {
+        int id = checkRequest(idFromPathVariable);
+        String latestResponse = versionRepository.findLatestVersionByDocumentId(id);
+        return new MessageResponse(latestResponse);
+    }
+
     public MessageResponse helloWorld(){
         return new MessageResponse("Hello World!!!!!!!!!!!!!!!!");
     }

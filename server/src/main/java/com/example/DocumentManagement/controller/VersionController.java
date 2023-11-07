@@ -31,6 +31,13 @@ public class VersionController {
         return ResponseEntity.ok(versionService.getOneVersion(id));
     }
 
+    @GetMapping("/version/{id}/latest-version")
+    public ResponseEntity<MessageResponse> getLatestVersion(
+            @PathVariable(name = "id") String id
+    ){
+        return ResponseEntity.ok(versionService.getLatestVersionByDocumentId(id));
+    }
+
     @GetMapping("/hello-world")
     public ResponseEntity<MessageResponse> helloWorld(
             @PathVariable(name = "id") String id
