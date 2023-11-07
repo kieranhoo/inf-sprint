@@ -17,7 +17,7 @@ export default function ListDocs() {
                         <td className=" w-1/5">Ver</td>
                     </tr>
                 </table> */}
-                <table class="table-auto w-4/5 text-center">
+                <table className="table-auto w-4/5 text-center">
                     <thead className="bg-blue-400">
                         <tr className="">
                             <th >ID</th>

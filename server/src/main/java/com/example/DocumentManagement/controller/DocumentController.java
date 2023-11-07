@@ -1,5 +1,6 @@
 package com.example.DocumentManagement.controller;
 
+import com.example.DocumentManagement.request.CreateDocumentRequest;
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
 import com.example.DocumentManagement.response.MessageResponse;
 import com.example.DocumentManagement.response.PageResponse;
@@ -17,8 +18,8 @@ public class DocumentController {
     private DocumentService documentService;
 
     @PostMapping("")
-    public ResponseEntity<MessageResponse> createDocument(@RequestBody UpdateDocumentRequest uploadRequest) {
-        return ResponseEntity.ok(documentService.createDocument(uploadRequest));
+    public ResponseEntity<MessageResponse> createDocument(@RequestBody CreateDocumentRequest createDocumentRequest) {
+        return ResponseEntity.ok(documentService.createDocument(createDocumentRequest));
     }
 
     @PutMapping("/{id}")

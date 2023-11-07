@@ -31,4 +31,7 @@ public class DocumentEntity extends BaseEntity{
 
     @Column(name = "date_deleted")
     private Date dateDeleted;
+
+    @Column(name = "department_id")
+    private String departmentId;
 }
