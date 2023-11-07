@@ -1,10 +1,13 @@
 package com.example.DocumentManagement.service;
 
+import com.example.DocumentManagement.entity.DepartmentEntity;
 import com.example.DocumentManagement.entity.DocumentEntity;
 import com.example.DocumentManagement.entity.VersionEntity;
 import com.example.DocumentManagement.exception.NotFoundException;
+import com.example.DocumentManagement.repository.DepartmentRepository;
 import com.example.DocumentManagement.repository.DocumentRepository;
 import com.example.DocumentManagement.repository.VersionRepository;
+import com.example.DocumentManagement.request.CreateDocumentRequest;
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
 import com.example.DocumentManagement.response.GetAllDocumentResponse;
 import com.example.DocumentManagement.response.MessageResponse;
@@ -27,25 +30,33 @@ import java.util.List;
 public class DocumentService extends SupportFunction {
     private final DocumentRepository documentRepository;
     private final VersionRepository versionRepository;
+    private final DepartmentRepository DepartmentRepository;
 
-    public MessageResponse createDocument(UpdateDocumentRequest updateDocumentRequest) {
+    public MessageResponse createDocument(CreateDocumentRequest createDocumentRequest) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         java.util.Date utilDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
-        updateDocumentRequest.setNameVersion("1.0.0");
+        createDocumentRequest.setNameVersion("1.0.0");
+
+        DepartmentEntity departmentEntity = DepartmentRepository.findDepartmentById(Integer.parseInt(createDocumentRequest.getDepartmentId()));
+
+        if (departmentEntity == null) {
+            throw new NotFoundException("Department not found!");
+        }
 
         DocumentEntity documentEntity = documentRepository.save(new DocumentEntity(
-                updateDocumentRequest.getNameDocument(),
-                updateDocumentRequest.getDescription(),
+                createDocumentRequest.getNameDocument(),
+                createDocumentRequest.getDescription(),
                 new Date(utilDate.getTime()),
                 false,
-                null
+                null,
+                createDocumentRequest.getDepartmentId()
         ));
 
         versionRepository.save(new VersionEntity(
                 documentEntity.getId(),
-                updateDocumentRequest.getUrl(),
-                updateDocumentRequest.getNameVersion(),
+                createDocumentRequest.getUrl(),
+                createDocumentRequest.getNameVersion(),
                 true,
                 new Date(utilDate.getTime())
         ));
@@ -57,8 +68,8 @@ public class DocumentService extends SupportFunction {
         int id = checkRequest(idFromPathVariable);
 
         DocumentEntity documentEntity = documentRepository.findDocumentById(id);
-        if(documentEntity == null) {
-            throw new NotFoundException("Don't exit Document.");
+        if (documentEntity == null) {
+            throw new NotFoundException("Document not found!");
         }
 
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -73,7 +84,7 @@ public class DocumentService extends SupportFunction {
 
         //set field "current version" of another version is false
         List<VersionEntity> listVersion = versionRepository.findByDocumentIdAndCurrentVersionTrue(id);
-        for(VersionEntity loop : listVersion) {
+        for (VersionEntity loop : listVersion) {
             versionRepository.updateCurrentVersion(loop.getId());
         }
 
@@ -100,7 +111,7 @@ public class DocumentService extends SupportFunction {
         Page<DocumentEntity> pageDocument = documentRepository.findAllPageByIsDeletedFalse(pageable);
 
         List<GetAllDocumentResponse> response = new ArrayList<>();
-        for(DocumentEntity loop : pageDocument.getContent()) {
+        for (DocumentEntity loop : pageDocument.getContent()) {
             response.add(new GetAllDocumentResponse(
                     loop.getId(),
                     loop.getName(),
