@@ -1,33 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import SearchDoc from '../../components/searchDoc';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
 export const DocDetail = () => {
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
-    const [documents, setDocuments] = useState([
-        // // Danh sách các phiên bản document, mỗi phiên bản là một đối tượng
-        // {
-        //     id: 1,
-        //     title: 'Document Title 1',
-        //     description: 'Description for Document 1',
-        //     version: 1,
-        //     time: '2023-11-04',
-        //     file: 'document1.pdf',
-        //     category: 'Category 1',
-        // },
-        // {
-        //     id: 2,
-        //     title: 'Document Title 2',
-        //     description: 'Description for Document 2',
-        //     version: 2,
-        //     time: '2023-11-05',
-        //     file: 'document2.pdf',
-        //     category: 'Category 2',
-        // },
-        // // Thêm các phiên bản document khác nếu cần
-    ]);
+    const [documents, setDocuments] = useState([]);
     const [selectedVersion, setSelectedVersion] = useState();
     const handleVersionChange = (event) => {
         const selectedDocument = documents.find((doc) => doc.version === event.target.value);
@@ -54,7 +32,6 @@ export const DocDetail = () => {
                 }
                 return ret;
             })
-            console.log(versions);
             setDocuments(versions);
             setIsLoading(false);
         };

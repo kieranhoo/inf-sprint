@@ -8,7 +8,6 @@ const RouterList = () => {
     return (
         <Routes>
             <Route path="/upload" element={<UploadPage />} />
-            {/* <Route path="/document" element={<DocDetail />} /> */}
             <Route path="/document/:id" element={<DocDetail />} />
             <Route path="/" element={<ListDocs />} />
             <Route path="*" element={<div>Error 404</div>} />
