@@ -27,6 +27,6 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
     @Query(value = "SELECT * FROM document WHERE department_id = ?", nativeQuery = true)
     List<DocumentEntity> findDocumentsByDepartmentId(int id);
 
-    // @Query(value = "SELECT * FROM document WHERE department_id = ?", nativeQuery = true)
-    // List<DocumentEntity> findDocumentsByDepartmentId(int id);
+    @Query(value = "SELECT * FROM document WHERE department_id = ? and name REGEXP ?", nativeQuery = true)
+    List<DocumentEntity> searchDocuments(int departmentID, String keyword);
 }

@@ -1,6 +1,7 @@
 package com.example.DocumentManagement.controller;
 
 import com.example.DocumentManagement.request.CreateDocumentRequest;
+import com.example.DocumentManagement.request.SearchDocumentRequest;
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
 import com.example.DocumentManagement.response.ListResponse;
 import com.example.DocumentManagement.response.MessageResponse;
@@ -43,5 +44,12 @@ public class DocumentController {
             @PathVariable(name = "id") String id
     ) {
         return ResponseEntity.ok(documentService.getDocumentsByDepartmentId(id));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<ListResponse> searchDocuments(
+           @RequestBody SearchDocumentRequest searchDocumentRequest
+    ) {
+        return ResponseEntity.ok(documentService.searchDocuments(searchDocumentRequest.getDepartmentID(), searchDocumentRequest.getKeyword()));
     }
 }
