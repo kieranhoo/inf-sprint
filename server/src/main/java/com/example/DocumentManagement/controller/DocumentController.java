@@ -3,6 +3,7 @@ package com.example.DocumentManagement.controller;
 import com.example.DocumentManagement.request.CreateDocumentRequest;
 import com.example.DocumentManagement.request.SearchDocumentRequest;
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
+import com.example.DocumentManagement.response.DocumentResponse;
 import com.example.DocumentManagement.response.ListResponse;
 import com.example.DocumentManagement.response.MessageResponse;
 import com.example.DocumentManagement.response.PageResponse;
@@ -39,6 +40,12 @@ public class DocumentController {
         return ResponseEntity.ok(documentService.getAllDocuments(page, size));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<DocumentResponse> getDocumentById(
+            @PathVariable(name = "id") String id
+    ) {
+        return ResponseEntity.ok(documentService.getDocumentById(id));
+    }
     @GetMapping("/departments/{id}")
     public ResponseEntity<ListResponse> getDocumentsByDepartmentId(
             @PathVariable(name = "id") String id

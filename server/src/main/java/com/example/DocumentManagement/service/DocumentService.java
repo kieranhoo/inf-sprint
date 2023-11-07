@@ -9,6 +9,7 @@ import com.example.DocumentManagement.repository.DocumentRepository;
 import com.example.DocumentManagement.repository.VersionRepository;
 import com.example.DocumentManagement.request.CreateDocumentRequest;
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
+import com.example.DocumentManagement.response.DocumentResponse;
 import com.example.DocumentManagement.response.GetAllDocumentResponse;
 import com.example.DocumentManagement.response.ListResponse;
 import com.example.DocumentManagement.response.MessageResponse;
@@ -58,10 +59,31 @@ public class DocumentService extends SupportFunction {
                 createDocumentRequest.getUrl(),
                 createDocumentRequest.getNameVersion(),
                 true,
-                new Date(utilDate.getTime())
+                new Date(utilDate.getTime()),
+                createDocumentRequest.getNote()
         ));
 
         return new MessageResponse("Create SuccessFully!");
+    }
+
+    public DocumentResponse getDocumentById(String idFromPathVariable) {
+        int id = checkRequest(idFromPathVariable);
+
+        DocumentEntity documentEntity = documentRepository.findDocumentById(id);
+        if (documentEntity == null) {
+            throw new NotFoundException("Document not found!");
+        }
+
+        List<VersionEntity> listVersion = versionRepository.findByDocumentId(id);
+
+        return new DocumentResponse(
+                documentEntity.getId(),
+                documentEntity.getName(),
+                documentEntity.getDescription(),
+                documentEntity.getCreateTime(),
+                DepartmentRepository.findDepartmentById(Integer.parseInt(documentEntity.getDepartmentId())),
+                listVersion
+        );
     }
 
     public MessageResponse updateDocument(UpdateDocumentRequest updateDocumentRequest, String idFromPathVariable) {
@@ -93,7 +115,8 @@ public class DocumentService extends SupportFunction {
                 updateDocumentRequest.getUrl(),
                 updateDocumentRequest.getNameVersion(),
                 true,
-                createTime
+                createTime,
+                updateDocumentRequest.getNote()
         ));
 
         return new MessageResponse("Update Document SuccessFully!");
