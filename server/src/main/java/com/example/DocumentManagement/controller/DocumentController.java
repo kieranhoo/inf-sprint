@@ -20,7 +20,6 @@ public class DocumentController {
 
     @PostMapping("")
     public ResponseEntity<MessageResponse> createDocument(@RequestBody CreateDocumentRequest createDocumentRequest) {
-        createDocumentRequest.setNameVersion("Version 1.0.0");
         return ResponseEntity.ok(documentService.createDocument(createDocumentRequest));
     }
 

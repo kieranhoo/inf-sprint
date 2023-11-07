@@ -34,6 +34,7 @@ public class DocumentService extends SupportFunction {
     private final DepartmentRepository DepartmentRepository;
 
     public MessageResponse createDocument(CreateDocumentRequest createDocumentRequest) {
+        createDocumentRequest.setNameVersion("Version 1.0.0");
         LocalDateTime currentDateTime = LocalDateTime.now();
         java.util.Date utilDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
