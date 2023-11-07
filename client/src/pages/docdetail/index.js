@@ -1,28 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchDoc from '../../components/searchDoc';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 
 export const DocDetail = () => {
+    const { id } = useParams();
     const [documents] = useState([
-        // Danh sách các phiên bản document, mỗi phiên bản là một đối tượng
-        {
-            id: 1,
-            title: 'Document Title 1',
-            description: 'Description for Document 1',
-            version: 1,
-            time: '2023-11-04',
-            file: 'document1.pdf',
-            category: 'Category 1',
-        },
-        {
-            id: 2,
-            title: 'Document Title 2',
-            description: 'Description for Document 2',
-            version: 2,
-            time: '2023-11-05',
-            file: 'document2.pdf',
-            category: 'Category 2',
-        },
-        // Thêm các phiên bản document khác nếu cần
+        // // Danh sách các phiên bản document, mỗi phiên bản là một đối tượng
+        // {
+        //     id: 1,
+        //     title: 'Document Title 1',
+        //     description: 'Description for Document 1',
+        //     version: 1,
+        //     time: '2023-11-04',
+        //     file: 'document1.pdf',
+        //     category: 'Category 1',
+        // },
+        // {
+        //     id: 2,
+        //     title: 'Document Title 2',
+        //     description: 'Description for Document 2',
+        //     version: 2,
+        //     time: '2023-11-05',
+        //     file: 'document2.pdf',
+        //     category: 'Category 2',
+        // },
+        // // Thêm các phiên bản document khác nếu cần
     ]);
     const [selectedVersion, setSelectedVersion] = useState(documents[0]);
     const handleVersionChange = (event) => {
@@ -30,6 +33,19 @@ export const DocDetail = () => {
         const selectedDocument = documents.find((doc) => doc.id === selectedId);
         setSelectedVersion(selectedDocument);
     };
+
+    useEffect(() => {
+        const fetchDocuments = async () => {
+            console.log(id);
+            const { data } = await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/document/${id}`);
+            const { versions } = data;
+            versions.map((version) => ({
+                id: version.id,
+                title: version.title,
+            }))
+        };
+        fetchDocuments();
+    }, [id]);
 
     return (
         <div className="pt-6 container">
