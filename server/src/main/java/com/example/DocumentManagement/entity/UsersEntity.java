@@ -15,6 +15,9 @@ import java.util.Date;
 @Builder
 @Table(name = "users")
 public class UsersEntity extends BaseEntity{
+    @Column(name = "department_id")
+    private Integer departmentId;
+
     @Column(name = "user_name", nullable = false)
     private String username;
 

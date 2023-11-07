@@ -35,6 +35,7 @@ public class AuthenticationService extends SupportFunction {
     private final JwtService jwtService;
     private final TokenCategoryRepository tokenCategoryRepository;
     private final TokenTypeRepository tokenTypeRepository;
+    private final DepartmentRepository departmentRepository;
     private final AuthenticationManager authenticationManager;
 
     public MessageResponse register(UserCreateRequest userCreateRequest){
@@ -42,7 +43,18 @@ public class AuthenticationService extends SupportFunction {
         UsersEntity userCheck = userRepository.findByUsernameOrEmailAndIsDeletedFalse(name[0], userCreateRequest.getEmail()).orElse(null);
         if (userCheck != null)
             throw new ConflictException("User name or email already exists");
+
+        DepartmentEntity departmentEntity = departmentRepository.findDepartmentById(userCreateRequest.getDepartmentId());
+        if(departmentEntity == null) {
+            throw new NotFoundException("Can't not find department!");
+        }
+
+        if(checkRole(userCreateRequest.getRole()) == null) {
+            throw new NotFoundException("Role doesn't exist in System!");
+        }
+
         var user = UsersEntity.builder()
+                .departmentId(userCreateRequest.getDepartmentId())
                 .username(name[0])
                 .email(userCreateRequest.getEmail())
                 .isDeleted(false)

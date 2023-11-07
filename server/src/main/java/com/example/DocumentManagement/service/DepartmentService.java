@@ -1,24 +1,21 @@
 package com.example.DocumentManagement.service;
 
 import com.example.DocumentManagement.entity.DepartmentEntity;
-import com.example.DocumentManagement.entity.DocumentEntity;
-import com.example.DocumentManagement.entity.UserEntity;
+import com.example.DocumentManagement.entity.UsersEntity;
 import com.example.DocumentManagement.repository.DepartmentRepository;
-import com.example.DocumentManagement.repository.UserRepository;
-import com.example.DocumentManagement.repository.VersionRepository;
+import com.example.DocumentManagement.repository.UsersRepository;
 import com.example.DocumentManagement.response.ListResponse;
 import com.example.DocumentManagement.supportFunction.SupportFunction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class DepartmentService extends SupportFunction {
     private final DepartmentRepository departmentRepository;
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
 
     public ListResponse getAllDepartments() {
         List<DepartmentEntity> departments = departmentRepository.findAllDepartments();
@@ -32,7 +29,7 @@ public class DepartmentService extends SupportFunction {
 
     public ListResponse getAllUsersByDepartmentId(String idFromPathVariable) {
         int id = checkRequest(idFromPathVariable);
-        List<UserEntity> users = userRepository.findUsersByDepartmentId(id);
+        List<UsersEntity> users = usersRepository.findUsersByDepartmentId(id);
         return new ListResponse(users);
     }
 }
