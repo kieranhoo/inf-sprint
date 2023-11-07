@@ -128,4 +128,9 @@ public class DocumentService extends SupportFunction {
         List<DocumentEntity> documents = documentRepository.findDocumentsByDepartmentId(id);
         return new ListResponse(documents);
     }
+
+    public ListResponse searchDocuments(Integer departmentID, String keyword) {
+        List<DocumentEntity> documents = documentRepository.searchDocuments(departmentID, keyword);
+        return new ListResponse(documents);
+    }
 }
