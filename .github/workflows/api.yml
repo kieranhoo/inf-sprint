@@ -1,0 +1,45 @@
+name: Build API Server
+
+on:
+  push:
+    branches:
+      - stag
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest .
+        working-directory: ./server
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+
+      - name: Logout from Docker Hub
+        run: docker logout
+
+  deploy:
+    needs: build
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Okteto Cli
+        run: curl https://get.okteto.com -sSfL | sh
+
+      - name: Use default Context
+        run: okteto context --token ${{secrets.RUNNER}} use
+
+      - name: deploy
+        run: okteto deploy
