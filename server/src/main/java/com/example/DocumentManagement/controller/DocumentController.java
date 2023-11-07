@@ -35,6 +35,10 @@ public class DocumentController {
     ) {
         return ResponseEntity.ok(documentService.getAllDocuments(page, size));
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteDocumentById(@PathVariable(name = "id") String id){
+        return ResponseEntity.ok(documentService.deleteDocumentById(id));
+    }
 
 
 }
