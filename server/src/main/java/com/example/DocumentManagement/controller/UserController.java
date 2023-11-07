@@ -1,32 +1,38 @@
 package com.example.DocumentManagement.controller;
 
-import com.example.DocumentManagement.entity.UserEntity;
+import com.example.DocumentManagement.entity.UsersEntity;
+import com.example.DocumentManagement.request.GetUserInfoRequest;
 import com.example.DocumentManagement.response.ListResponse;
-import com.example.DocumentManagement.service.UserService;
+import com.example.DocumentManagement.response.OneUserResponse;
+import com.example.DocumentManagement.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
     @Autowired
-    private UserService userService;
+    private UsersService usersService;
 
     @GetMapping("")
     public ResponseEntity<ListResponse> getAllUsers() {
-        return ResponseEntity.ok(userService.getAllUsers());
+        return ResponseEntity.ok(usersService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserEntity> getUserById(
+    public ResponseEntity<UsersEntity> getUserById(
             @PathVariable(name = "id") String id
     ) {
-        return ResponseEntity.ok(userService.getUserById(id));
+        return ResponseEntity.ok(usersService.getUserById(id));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<OneUserResponse> getOneUser(
+            @RequestBody GetUserInfoRequest getUserInfoRequest
+    ) {
+        return ResponseEntity.ok(usersService.getOneUser(getUserInfoRequest.getAccessToken()));
     }
 }

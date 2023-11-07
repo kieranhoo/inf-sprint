@@ -17,4 +17,5 @@ public class UserCreateRequest {
     private String email;
     private String password;
     private String role;
+    private Integer departmentId;
 }

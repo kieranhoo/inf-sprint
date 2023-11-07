@@ -3,19 +3,31 @@ package com.example.DocumentManagement.service;
 import com.example.DocumentManagement.entity.UsersEntity;
 import com.example.DocumentManagement.exception.NotFoundException;
 import com.example.DocumentManagement.repository.UsersRepository;
-import com.example.DocumentManagement.response.MessageResponse;
+import com.example.DocumentManagement.response.ListResponse;
 import com.example.DocumentManagement.response.OneUserResponse;
+import com.example.DocumentManagement.supportFunction.SupportFunction;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CommonService {
+public class UsersService extends SupportFunction {
     private final UsersRepository usersRepository;
+
+    public ListResponse getAllUsers() {
+        List<UsersEntity> users = usersRepository.findAllUsers();
+        return new ListResponse(users);
+    }
+
+    public UsersEntity getUserById(String idFromPathVariable) {
+        int id = checkRequest(idFromPathVariable);
+        return usersRepository.findUserById(id);
+    }
 
     public OneUserResponse getOneUser(String accessToken) {
         String[] chunks = accessToken.split("\\.");
@@ -35,7 +47,7 @@ public class CommonService {
                 roles[i] = rolesArray.get(i).asText();
             }
 
-            UsersEntity usersEntity = usersRepository.findByUserId(userId);
+            UsersEntity usersEntity = usersRepository.findUserById(userId);
             if (usersEntity == null) {
                 throw new NotFoundException("User doesn't exist.");
             }

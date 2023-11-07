@@ -28,16 +28,9 @@ CREATE TABLE if not exists document_management.department (
     description VARCHAR(300)
 );
 
-CREATE TABLE if not exists document_management.user (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    username VARCHAR(50) NOT NULL,
-    department_id INTEGER
-);
-
 CREATE TABLE IF NOT EXISTS document_management.users (
 	id INTEGER PRIMARY KEY AUTO_INCREMENT,
+	department_id INTEGER,
 	user_name VARCHAR(30) NOT null UNIQUE,
 	email VARCHAR(100) NOT null UNIQUE,
 	pass VARCHAR(255) NOT NULL,
@@ -89,7 +82,7 @@ ADD CONSTRAINT fk_token_category_id FOREIGN KEY (token_category_id) REFERENCES t
 alter table document_management.document
 add constraint fk_dep_id_document foreign key (department_id) references department(id);
 
-alter table document_management.user
+alter table document_management.users
 add constraint fk_user_id_document foreign key (department_id) references department(id);
 
 INSERT INTO document_management.roles (id,role)
@@ -144,27 +137,4 @@ VALUES
     (8, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-08'),
     (9, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-09'),
     (10, 'https://example.com/version/1', 'Version 1.0.0', 'Initial version', true, '2023-11-10');
-
-INSERT INTO document_management.user (name, email, username, department_id)
-VALUES
-   ('User 1', 'user1@example.com', 'user1', 1),
-	('User 2', 'user2@example.com', 'user2', 1),
-	('User 3', 'user3@example.com', 'user3', 1),
-	('User 4', 'user4@example.com', 'user4', 1),
-	('User 5', 'user5@example.com', 'user5', 1),
-	('User 6', 'user6@example.com', 'user6', 2),
-	('User 7', 'user7@example.com', 'user7', 2),
-	('User 8', 'user8@example.com', 'user8', 2),
-	('User 9', 'user9@example.com', 'user9', 2),
-	('User 10', 'user10@example.com', 'user10', 3),
-	('User 11', 'user11@example.com', 'user11', 3),
-	('User 12', 'user12@example.com', 'user12', 3),
-	('User 13', 'user13@example.com', 'user13', 3),
-	('User 14', 'user14@example.com', 'user14', 3),
-	('User 15', 'user15@example.com', 'user15', 1),
-	('User 16', 'user16@example.com', 'user16', 1),
-	('User 17', 'user17@example.com', 'user17', 2),
-	('User 18', 'user18@example.com', 'user18', 2),
-	('User 19', 'user19@example.com', 'user19', 3),
-	('User 20', 'user20@example.com', 'user20', 3);
 
