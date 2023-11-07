@@ -1,6 +1,7 @@
 package com.example.DocumentManagement.service;
 
 import com.example.DocumentManagement.entity.DepartmentEntity;
+import com.example.DocumentManagement.entity.DocumentEntity;
 import com.example.DocumentManagement.entity.UserEntity;
 import com.example.DocumentManagement.repository.DepartmentRepository;
 import com.example.DocumentManagement.repository.UserRepository;

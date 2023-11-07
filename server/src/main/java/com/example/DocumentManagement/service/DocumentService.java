@@ -10,6 +10,7 @@ import com.example.DocumentManagement.repository.VersionRepository;
 import com.example.DocumentManagement.request.CreateDocumentRequest;
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
 import com.example.DocumentManagement.response.GetAllDocumentResponse;
+import com.example.DocumentManagement.response.ListResponse;
 import com.example.DocumentManagement.response.MessageResponse;
 import com.example.DocumentManagement.response.PageResponse;
 import com.example.DocumentManagement.supportFunction.SupportFunction;
@@ -121,5 +122,11 @@ public class DocumentService extends SupportFunction {
         }
 
         return new PageResponse(pageDocument.getTotalElements(), pageDocument.getTotalPages(), response);
+    }
+
+    public ListResponse getDocumentsByDepartmentId(String idFromPathVariable) {
+        int id = checkRequest(idFromPathVariable);
+        List<DocumentEntity> documents = documentRepository.findDocumentsByDepartmentId(id);
+        return new ListResponse(documents);
     }
 }
