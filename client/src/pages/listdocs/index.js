@@ -1,6 +1,16 @@
+import { useState } from 'react'
+import DeleteModal from '../../components/modal/delete.modal';
 import './index.css'
 
 export default function ListDocs() {
+    const [open, setOpen] = useState(false);
+    const [doc, setDoc] = useState(null);
+
+    const handlerDelete = (docData) => {
+        setOpen(true);
+        setDoc(docData);
+    } 
+
     return (
         <div className="list-docs">
             <div className='text-center'>
@@ -26,6 +36,7 @@ export default function ListDocs() {
                             <th>Version</th>
                             <th>Download</th>
                             <th>Time</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -35,6 +46,8 @@ export default function ListDocs() {
                             <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
                             <td>1.0.0</td>
                             <td>Link</td>
+                            <td></td>
+                            <td><button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerDelete({id:1, nameDocument: 'hello'})}>Delete</button></td>
                         </tr>
                         <tr>
                             <td>1972</td>
@@ -42,6 +55,8 @@ export default function ListDocs() {
                             <td>The Eagles</td>
                             <td>1.0.0</td>
                             <td>Link</td>
+                            <td></td>
+                            <td></td>
                         </tr>
                         <tr>
                             <td>1975</td>
@@ -49,10 +64,16 @@ export default function ListDocs() {
                             <td>Earth, Wind, and Fire</td>
                             <td>1.0.0</td>
                             <td>Link</td>
+                            <td></td>
+                            <td></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+
+            <DeleteModal docData={doc} open={open} onClose = {() => setOpen(false)}>
+                <button className="text-gray-500 bg-gray-100 hover:bg-gray-200 font-bold py-2 px-4 rounded" onClick={() => setOpen(false)}>Cancle</button>
+            </DeleteModal>
         </div>
     )
 }
