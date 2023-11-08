@@ -145,6 +145,16 @@ public class DocumentService extends SupportFunction {
 
         return new PageResponse(pageDocument.getTotalElements(), pageDocument.getTotalPages(), response);
     }
+    public MessageResponse deleteDocumentById(String idFromPathVariable){
+        int id = checkRequest(idFromPathVariable);
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Date deleteTime = new Date(Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant()).getTime());
+
+        documentRepository.deleteDocumentById(Boolean.TRUE,deleteTime,id);
+
+        return new MessageResponse("Delete Document SuccessFully!");
+    }
 
     public ListResponse getDocumentsByDepartmentId(String idFromPathVariable) {
         int id = checkRequest(idFromPathVariable);
