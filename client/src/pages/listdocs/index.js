@@ -3,12 +3,16 @@ import DeleteModal from '../../components/modal/delete.modal';
 import './index.css'
 
 export default function ListDocs() {
-    const [open, setOpen] = useState(false);
-    const [doc, setDoc] = useState(null);
+    const [deleteModelStatus, setDeleteModelStatus] = useState(false);
+    const [doc, setDoc] = useState('');
+
+    const handlerDeleteModalOpen = (status) => {
+        setDeleteModelStatus(status);
+    }
 
     const handlerDelete = (docData) => {
-        setOpen(true);
         setDoc(docData);
+        setDeleteModelStatus(true);
     } 
 
     return (
@@ -47,7 +51,7 @@ export default function ListDocs() {
                             <td>1.0.0</td>
                             <td>Link</td>
                             <td></td>
-                            <td><button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerDelete({id:1, nameDocument: 'hello'})}>Delete</button></td>
+                            <td><button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerDelete({id:1, nameDocument: 'hello123'})}>Delete</button></td>
                         </tr>
                         <tr>
                             <td>1972</td>
@@ -71,8 +75,7 @@ export default function ListDocs() {
                 </table>
             </div>
 
-            <DeleteModal docData={doc} open={open} onClose = {() => setOpen(false)}>
-                <button className="text-gray-500 bg-gray-100 hover:bg-gray-200 font-bold py-2 px-4 rounded" onClick={() => setOpen(false)}>Cancle</button>
+            <DeleteModal docData={doc} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModelStatus} onClose = {() => setDeleteModelStatus(false)}>
             </DeleteModal>
         </div>
     )
