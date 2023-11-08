@@ -12,6 +12,8 @@ import java.sql.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OneUserResponse {
+    private Integer id;
     private String userName;
     private String email;
+    private Integer departmentId;
 }
