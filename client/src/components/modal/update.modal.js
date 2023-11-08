@@ -43,6 +43,7 @@ export default function UpdateModal({ docData, sendOpenStatusToParent, open, onC
             setMessage("Document update successfully");
             setIsProcessing(false);
             sendOpenStatusToParent(false);
+            window.location.reload(true);
         } catch (err) {
             setMessage("Something went wrong");
         }

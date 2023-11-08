@@ -3,8 +3,9 @@ import axios from 'axios';
 export default function DeleteModal ({docData, sendOpenStatusToParent, open, onClose}) {
     const deleteDocumentById = async (id) => {
         try {
-            sendOpenStatusToParent(false);
             await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/document/${id}`);
+            sendOpenStatusToParent(false);
+            window.location.reload(true);
         } catch (error) {
             console.error(`Error deleting data with ID ${id}:`, error);
         }
