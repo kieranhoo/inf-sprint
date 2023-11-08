@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import DeleteModal from '../../components/modal/delete.modal';
 import UpdateModal from '../../components/modal/update.modal';
+import { useSelector } from 'react-redux';
 import './index.css'
 
 export default function ListDocs() {
@@ -8,14 +9,15 @@ export default function ListDocs() {
     const [updateModalStatus, setUpdateModalStatus] = useState(false);
     const [doc, setDoc] = useState('');
     const [documents, setDocuments] = useState([]);
+    const user = useSelector((state) => state.auth.user);
 
-  useEffect(() => {
-    // Use the Fetch API to fetch data from the API endpoint
-    fetch(`${process.env.REACT_APP_API_ENDPOINT}/document/departments/1`)
-      .then((response) => response.json())
-      .then((data) => setDocuments(data.listContent))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
+    useEffect(() => {
+        // Use the Fetch API to fetch data from the API endpoint
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/document/departments/${user.departmentId}`)
+        .then((response) => response.json())
+        .then((data) => setDocuments(data.listContent))
+        .catch((error) => console.error('Error fetching data:', error));
+    }, []);
 
     const handlerDeleteModalOpen = (status) => {
         setDeleteModalStatus(status);
@@ -41,14 +43,6 @@ export default function ListDocs() {
                 </h1>
             </div>
             <div className=' flex justify-center'>
-                {/* <table className=" w-4/5 text-center">
-                    <tr className=" w-full">
-                        <td className=" w-1/5">ID</td>
-                        <td className=" w-1/5">Name</td>
-                        <td className=" w-1/5">Decs</td>
-                        <td className=" w-1/5">Ver</td>
-                    </tr>
-                </table> */}
                 <table className="table-auto w-4/5 text-center">
                     <thead className="bg-blue-400">
                         <tr className="">
