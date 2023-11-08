@@ -5,11 +5,11 @@ import axios from 'axios';
 
 export default function UpdateModal ({docData, sendOpenStatusToParent, open, onClose}) {
     const [progress, setProgress] = useState(0);
-    const [title, setTitle] = useState(docData.nameDocument);
-    const [version, setVersion] = useState(docData.nameVersion);
-    const [description, setDescription] = useState(docData.description);
+    const [title, setTitle] = useState();  
+    const [version, setVersion] = useState();
+    const [description, setDescription] = useState();
     const [message, setMessage] = useState();
-    const [note, setNote] = useState(docData.note);
+    const [note, setNote] = useState(); 
     const [isProcessing, setIsProcessing] = useState(false);
 
     const formHandler = async (e) => {
@@ -29,16 +29,17 @@ export default function UpdateModal ({docData, sendOpenStatusToParent, open, onC
                     nameVersion: version,
                 })
             } else {
-                await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/document/${title}`, {
+                await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/document/${docData.id}`, {
                     nameDocument: title,
                     description: description,
                     note,
                 })
+                setProgress(100);
             }
             setTitle("");
             setVersion("");
             setDescription("");
-            setMessage("Document upload successfully");
+            setMessage("Document update successfully");
             setIsProcessing(false);
         } catch (err) {
             setMessage("Something went wrong");
@@ -87,25 +88,25 @@ export default function UpdateModal ({docData, sendOpenStatusToParent, open, onC
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="nameDocument">
                             nameDocument
                         </label>
-                        <input defaultValue={docData.nameDocument} onChange={(e) => setTitle(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nameDocument" type="text" placeholder="nameDocument"/>
+                        <input defaultValue={title} onChange={(e) => setTitle(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nameDocument" type="text" placeholder="nameDocument"/>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="nameVersion">
                             nameVersion
                         </label>
-                        <input defaultValue={docData.nameVersion}onChange={(e) => setVersion(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nameVersion" type="text" placeholder="nameVersion"/>
+                        <input defaultValue={version}onChange={(e) => setVersion(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="nameVersion" type="text" placeholder="nameVersion"/>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
                             description
                         </label>
-                        <input defaultValue={docData.description} onChange={(e) => setDescription(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" type="textarea" placeholder="description"/>
+                        <input defaultValue={description} onChange={(e) => setDescription(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" type="textarea" placeholder="description"/>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="note">
                             note
                         </label>
-                        <input defaultValue={docData.note} onChange={(e) => setNote(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="note" type="textarea" placeholder="note"/>
+                        <input defaultValue={note} onChange={(e) => setNote(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="note" type="textarea" placeholder="note"/>
                     </div>
                     <div class="mb-6">
                         <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -133,7 +134,7 @@ export default function UpdateModal ({docData, sendOpenStatusToParent, open, onC
                     <div className='justify-center flex'>
                         <div className="justify-around flex gap-4 w-56">
                             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={formHandler}>Update</button>
-                            <button className="text-gray-500 bg-gray-100 hover:bg-gray-200 font-bold py-2 px-4 rounded" onClick={() => sendOpenStatusToParent(false)}>Cancle</button>
+                            <button className="text-gray-500 bg-gray-100 hover:bg-gray-200 font-bold py-2 px-4 rounded" onClick={() => sendOpenStatusToParent(false)}>Cancel</button>
                         </div>
                     </div>
                 </form>
@@ -141,3 +142,5 @@ export default function UpdateModal ({docData, sendOpenStatusToParent, open, onC
         </div>
     )
 }
+
+

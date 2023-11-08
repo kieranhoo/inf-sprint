@@ -2,13 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
+import DeleteModal from '../../components/modal/delete.modal';
+import UpdateModal from '../../components/modal/update.modal';
+
+
 export const DocDetail = () => {
     const { id } = useParams();
-    const [isLoading, setIsLoading] = useState(true);
+    const [deleteModalStatus, setDeleteModalStatus] = useState(false);
+    const [updateModalStatus, setUpdateModalStatus] = useState(false);
+        const [isLoading, setIsLoading] = useState(true);
     const [documents, setDocuments] = useState([]);
     const [selectedVersion, setSelectedVersion] = useState();
+
+    const handlerDeleteModalOpen = (status) => {
+        setDeleteModalStatus(status);
+    }
+    const handlerUpdateModalOpen = (status) => {
+        setUpdateModalStatus(status);
+    }
+
     const handleVersionChange = (event) => {
-        const selectedDocument = documents.find((doc) => doc.version === event.target.value);
+        const selectedDocument = documents.find((document) => document.version === event.target.value);
         setSelectedVersion(selectedDocument);
     };
 
@@ -58,11 +72,11 @@ export const DocDetail = () => {
                 <><div className="mb-4">
                     <label className="block text-sm font-medium text-gray-600 mb-1">Select Version:</label>
                     <select className="border border-gray-300 p-2 rounded-md w-full" onChange={handleVersionChange}>
-                        {documents.map((doc) => {
-                            if (doc.currentVersion) {
-                                return <option value={doc.version} key={doc.version} selected>{doc.version}</option>
+                        {documents.map((document) => {
+                            if (document.currentVersion) {
+                                return <option value={document.version} key={document.version} selected>{document.version}</option>
                             }
-                            return <option value={doc.version} key={doc.version}>{doc.version}</option>
+                            return <option value={document.version} key={document.version}>{document.version}</option>
                         })}
                     </select>
                 </div>
@@ -82,12 +96,22 @@ export const DocDetail = () => {
                                         <div className="mb-2">{selectedVersion.note}</div>
                                     </>
                                 )}
+                                <div>
+                                    <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => setDeleteModalStatus(true)}>Delete</button>
+                                    <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => setUpdateModalStatus(true)}>Update</button>
+                                </div>
                             </div>
                         ) : (
                             <div className="text-center">No versions found</div>
                         )}
-                    </div></>
+                    </div>   
+                </>
             )}
+            
+            <DeleteModal docData={selectedVersion} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModalStatus} onClose = {() => setDeleteModalStatus(false)}>
+            </DeleteModal>
+            <UpdateModal docData={selectedVersion} sendOpenStatusToParent={handlerUpdateModalOpen} open={updateModalStatus} onClose = {() => setUpdateModalStatus(false)}>
+            </UpdateModal>
         </div>
     );
 };

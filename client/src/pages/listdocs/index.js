@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import DeleteModal from '../../components/modal/delete.modal';
 import UpdateModal from '../../components/modal/update.modal';
 import './index.css'
@@ -7,6 +7,15 @@ export default function ListDocs() {
     const [deleteModalStatus, setDeleteModalStatus] = useState(false);
     const [updateModalStatus, setUpdateModalStatus] = useState(false);
     const [doc, setDoc] = useState('');
+    const [documents, setDocuments] = useState([]);
+
+  useEffect(() => {
+    // Use the Fetch API to fetch data from the API endpoint
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}/document/departments/1`)
+      .then((response) => response.json())
+      .then((data) => setDocuments(data.listContent))
+      .catch((error) => console.error('Error fetching data:', error));
+  }, []);
 
     const handlerDeleteModalOpen = (status) => {
         setDeleteModalStatus(status);
@@ -53,36 +62,19 @@ export default function ListDocs() {
                         </tr>
                     </thead>
                     <tbody>
+                        {documents.map((document) => (
                         <tr>
-                            <td>1961</td>
-                            <td>Malcolm Lockyer</td>
-                            <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
-                            <td>1.0.0</td>
-                            <td>Link</td>
-                            <td></td>
+                            <td>{document.id}</td>
+                            <td>{document.nameDocument}</td>
+                            <td>{document.description}</td>
+                            <td>{document.nameVersion}</td>
+                            <td>{document.url}</td>
+                            <td>{document.createTime}</td>
                             <td>
-                                <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerDelete({id:1, nameDocument: 'hello123'})}>Delete</button>
-                                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerUpdate({id:1, nameDocument: 'hello123'})}>Update</button>
+                                <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerDelete(document)}>Delete</button>
+                                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerUpdate(document)}>Update</button>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>1972</td>
-                            <td>Witchy Woman</td>
-                            <td>The Eagles</td>
-                            <td>1.0.0</td>
-                            <td>Link</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>1975</td>
-                            <td>Shining Star</td>
-                            <td>Earth, Wind, and Fire</td>
-                            <td>1.0.0</td>
-                            <td>Link</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                        </tr>))}
                     </tbody>
                 </table>
             </div>
