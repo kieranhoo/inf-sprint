@@ -96,9 +96,11 @@ export const DocDetail = () => {
                                         <div className="mb-2">{selectedVersion.note}</div>
                                     </>
                                 )}
-                                <div>
-                                    <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => setDeleteModalStatus(true)}>Delete</button>
-                                    <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => setUpdateModalStatus(true)}>Update</button>
+                                <div className='flex justify-center'>
+                                    <div className='flex justify-around w-56'>
+                                        <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => setUpdateModalStatus(true)}>Update</button>
+                                        <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => setDeleteModalStatus(true)}>Delete</button>
+                                    </div>  
                                 </div>
                             </div>
                         ) : (
@@ -108,10 +110,10 @@ export const DocDetail = () => {
                 </>
             )}
             
-            <DeleteModal docData={selectedVersion} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModalStatus} onClose = {() => setDeleteModalStatus(false)}>
-            </DeleteModal>
-            <UpdateModal docData={selectedVersion} sendOpenStatusToParent={handlerUpdateModalOpen} open={updateModalStatus} onClose = {() => setUpdateModalStatus(false)}>
-            </UpdateModal>
+            {selectedVersion && <DeleteModal docData={selectedVersion} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModalStatus} onClose = {() => setDeleteModalStatus(false)}>
+            </DeleteModal>}
+            {selectedVersion && <UpdateModal docData={selectedVersion} sendOpenStatusToParent={handlerUpdateModalOpen} open={updateModalStatus} onClose = {() => setUpdateModalStatus(false)}>
+            </UpdateModal>}
         </div>
     );
 };

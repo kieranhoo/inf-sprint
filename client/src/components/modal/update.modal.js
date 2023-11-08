@@ -33,7 +33,6 @@ export default function UpdateModal ({docData, sendOpenStatusToParent, open, onC
                     nameDocument: title,
                     description: description,
                     note,
-                    url: docData.file,
                     nameVersion: version,
                 })
                 setProgress(100);
@@ -43,6 +42,7 @@ export default function UpdateModal ({docData, sendOpenStatusToParent, open, onC
             setDescription("");
             setMessage("Document update successfully");
             setIsProcessing(false);
+            sendOpenStatusToParent(false);
         } catch (err) {
             setMessage("Something went wrong");
         }
