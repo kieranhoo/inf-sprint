@@ -31,10 +31,15 @@ public class VersionController {
         return ResponseEntity.ok(versionService.getOneVersion(id));
     }
 
-    @GetMapping("/hello-world")
-    public ResponseEntity<MessageResponse> helloWorld(
+    @GetMapping("/version/{id}/latest-version")
+    public ResponseEntity<MessageResponse> getLatestVersion(
             @PathVariable(name = "id") String id
     ){
+        return ResponseEntity.ok(versionService.getLatestVersionByDocumentId(id));
+    }
+
+    @GetMapping("/hello-world")
+    public ResponseEntity<MessageResponse> helloWorld(){
         return ResponseEntity.ok(versionService.helloWorld());
     }
 }

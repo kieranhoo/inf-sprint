@@ -35,4 +35,10 @@ public class SupportFunction {
             return 10;
         }
     }
+
+    public Integer checkRole(String role){
+        if (role.equals("Admin")) return 1;
+        else if(role.equals("Employee")) return 2;
+        else return null;
+    }
 }

@@ -10,20 +10,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
-public class UserEntity extends BaseEntity{
-    @Column(name = "department_id")
-    private Integer departmentId;
+@Entity
+@Table(name = "user_role")
+public class UserRoleEntity extends BaseEntity{
+    @Column(name = "user_id", nullable = false)
+    private Integer userId;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "username")
-    private String username;
-
-    @Column(name = "email")
-    private String email;
+    @Column(name = "role_id", nullable = false)
+    private Integer roleId;
 }

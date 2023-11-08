@@ -1,6 +1,10 @@
 package com.example.DocumentManagement.controller;
 
+import com.example.DocumentManagement.request.CreateDocumentRequest;
+import com.example.DocumentManagement.request.SearchDocumentRequest;
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
+import com.example.DocumentManagement.response.DocumentResponse;
+import com.example.DocumentManagement.response.ListResponse;
 import com.example.DocumentManagement.response.MessageResponse;
 import com.example.DocumentManagement.response.PageResponse;
 import com.example.DocumentManagement.service.DocumentService;
@@ -17,8 +21,8 @@ public class DocumentController {
     private DocumentService documentService;
 
     @PostMapping("")
-    public ResponseEntity<MessageResponse> createDocument(@RequestBody UpdateDocumentRequest uploadRequest) {
-        return ResponseEntity.ok(documentService.createDocument(uploadRequest));
+    public ResponseEntity<MessageResponse> createDocument(@RequestBody CreateDocumentRequest createDocumentRequest) {
+        return ResponseEntity.ok(documentService.createDocument(createDocumentRequest));
     }
 
     @PutMapping("/{id}")
@@ -40,5 +44,23 @@ public class DocumentController {
         return ResponseEntity.ok(documentService.deleteDocumentById(id));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<DocumentResponse> getDocumentById(
+            @PathVariable(name = "id") String id
+    ) {
+        return ResponseEntity.ok(documentService.getDocumentById(id));
+    }
+    @GetMapping("/departments/{id}")
+    public ResponseEntity<ListResponse> getDocumentsByDepartmentId(
+            @PathVariable(name = "id") String id
+    ) {
+        return ResponseEntity.ok(documentService.getDocumentsByDepartmentId(id));
+    }
 
+    @PostMapping("/search")
+    public ResponseEntity<ListResponse> searchDocuments(
+           @RequestBody SearchDocumentRequest searchDocumentRequest
+    ) {
+        return ResponseEntity.ok(documentService.searchDocuments(searchDocumentRequest.getDepartmentID(), searchDocumentRequest.getKeyword()));
+    }
 }
