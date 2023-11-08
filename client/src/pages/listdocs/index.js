@@ -1,18 +1,27 @@
 import { useState } from 'react'
 import DeleteModal from '../../components/modal/delete.modal';
+import UpdateModal from '../../components/modal/update.modal';
 import './index.css'
 
 export default function ListDocs() {
-    const [deleteModelStatus, setDeleteModelStatus] = useState(false);
+    const [deleteModalStatus, setDeleteModalStatus] = useState(false);
+    const [updateModalStatus, setUpdateModalStatus] = useState(false);
     const [doc, setDoc] = useState('');
 
     const handlerDeleteModalOpen = (status) => {
-        setDeleteModelStatus(status);
+        setDeleteModalStatus(status);
     }
-
     const handlerDelete = (docData) => {
         setDoc(docData);
-        setDeleteModelStatus(true);
+        setDeleteModalStatus(true);
+    } 
+
+    const handlerUpdateModalOpen = (status) => {
+        setUpdateModalStatus(status);
+    }
+    const handlerUpdate = (docData) => {
+        setDoc(docData);
+        setUpdateModalStatus(true);
     } 
 
     return (
@@ -51,7 +60,10 @@ export default function ListDocs() {
                             <td>1.0.0</td>
                             <td>Link</td>
                             <td></td>
-                            <td><button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerDelete({id:1, nameDocument: 'hello123'})}>Delete</button></td>
+                            <td>
+                                <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerDelete({id:1, nameDocument: 'hello123'})}>Delete</button>
+                                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerUpdate({id:1, nameDocument: 'hello123'})}>Update</button>
+                            </td>
                         </tr>
                         <tr>
                             <td>1972</td>
@@ -75,8 +87,10 @@ export default function ListDocs() {
                 </table>
             </div>
 
-            <DeleteModal docData={doc} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModelStatus} onClose = {() => setDeleteModelStatus(false)}>
+            <DeleteModal docData={doc} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModalStatus} onClose = {() => setDeleteModalStatus(false)}>
             </DeleteModal>
+            <UpdateModal docData={doc} sendOpenStatusToParent={handlerUpdateModalOpen} open={updateModalStatus} onClose = {() => setUpdateModalStatus(false)}>
+            </UpdateModal>
         </div>
     )
 }

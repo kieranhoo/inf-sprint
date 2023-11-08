@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export default function DeleteModal ({docData, sendOpenStatusToParent, open, onClose, children}) {
+export default function DeleteModal ({docData, sendOpenStatusToParent, open, onClose}) {
     const deleteDocumentById = async (id) => {
         try {
             sendOpenStatusToParent(false);
