@@ -149,7 +149,19 @@ public class DocumentService extends SupportFunction {
     public ListResponse getDocumentsByDepartmentId(String idFromPathVariable) {
         int id = checkRequest(idFromPathVariable);
         List<DocumentEntity> documents = documentRepository.findDocumentsByDepartmentId(id);
-        return new ListResponse(documents);
+        List<DocumentResponse> list = new ArrayList<>();
+        for (DocumentEntity loop : documents) {
+            List<VersionEntity> listVersion = versionRepository.findByDocumentIdAndCurrentVersionTrue(loop.getId());
+            list.add(new DocumentResponse(
+                    loop.getId(),
+                    loop.getName(),
+                    loop.getDescription(),
+                    loop.getCreateTime(),
+                    DepartmentRepository.findDepartmentById(Integer.parseInt(loop.getDepartmentId())),
+                    listVersion
+            ));
+        }
+        return new ListResponse(list);
     }
 
     public ListResponse searchDocuments(Integer departmentID, String keyword) {

@@ -1,5 +1,6 @@
 package com.example.DocumentManagement.service;
 
+import com.example.DocumentManagement.entity.DepartmentEntity;
 import com.example.DocumentManagement.entity.UsersEntity;
 import com.example.DocumentManagement.exception.NotFoundException;
 import com.example.DocumentManagement.repository.UsersRepository;
@@ -51,8 +52,7 @@ public class UsersService extends SupportFunction {
             if (usersEntity == null) {
                 throw new NotFoundException("User doesn't exist.");
             }
-
-            return new OneUserResponse(usersEntity.getUsername(), usersEntity.getEmail());
+            return new OneUserResponse(usersEntity.getId(),usersEntity.getUsername(),usersEntity.getEmail(),usersEntity.getDepartmentId());
 
         } catch (Exception e){
             throw new NotFoundException("Not found information from access token");
