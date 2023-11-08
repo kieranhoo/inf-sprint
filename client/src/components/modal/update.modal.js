@@ -35,11 +35,11 @@ export default function UpdateModal ({docData, sendOpenStatusToParent, open, onC
                     note,
                     nameVersion: version,
                 })
-                setProgress(100);
             }
             setTitle("");
             setVersion("");
             setDescription("");
+            setNote("");
             setMessage("Document update successfully");
             setIsProcessing(false);
             sendOpenStatusToParent(false);
