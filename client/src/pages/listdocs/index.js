@@ -36,19 +36,25 @@ export default function ListDocs() {
                         </tr>
                     </thead>
                     <tbody>
-                        {documents.map((document) => (
+                        {documents.length > 0 ? (
+                            documents.map((document) => (
+                                <tr>
+                                    <td>{document?.id}</td>
+                                    <td className="cursor-pointer text-blue-500" onClick={() => {
+                                        navigate(`/document/${document.id}`)
+                                    }}>
+                                        {document?.name}
+                                    </td>
+                                    <td>{document?.description}</td>
+                                    <td>{document?.versions[0]?.name}</td>
+                                    <td><a target='__blank' className="text-blue-500 underline" href={document?.versions[0]?.url}>Download link</a></td>
+                                    <td>{document?.createTime}</td>
+                                </tr>))
+                        ) : (
                             <tr>
-                                <td>{document.id}</td>
-                                <td className="cursor-pointer text-blue-500" onClick={() => {
-                                    navigate(`/document/${document.id}`)
-                                }}>
-                                    {document.name}
-                                </td>
-                                <td>{document.description}</td>
-                                <td>{document.versions[0].name}</td>
-                                <td><a target='__blank' className="text-blue-500 underline" href={document.versions[0].url}>Download link</a></td>
-                                <td>{document.createTime}</td>
-                            </tr>))}
+                                <td colSpan={6}>No documents</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
