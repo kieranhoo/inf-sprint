@@ -10,7 +10,7 @@ export const DocDetail = () => {
     const { id } = useParams();
     const [deleteModalStatus, setDeleteModalStatus] = useState(false);
     const [updateModalStatus, setUpdateModalStatus] = useState(false);
-        const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [documents, setDocuments] = useState([]);
     const [selectedVersion, setSelectedVersion] = useState();
 

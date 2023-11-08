@@ -5,11 +5,11 @@ import axios from 'axios';
 
 export default function UpdateModal ({docData, sendOpenStatusToParent, open, onClose}) {
     const [progress, setProgress] = useState(0);
-    const [title, setTitle] = useState();  
-    const [version, setVersion] = useState();
-    const [description, setDescription] = useState();
+    const [title, setTitle] = useState(docData.title);  
+    const [version, setVersion] = useState(docData.version);
+    const [description, setDescription] = useState(docData.description);
     const [message, setMessage] = useState();
-    const [note, setNote] = useState(); 
+    const [note, setNote] = useState(docData.note); 
     const [isProcessing, setIsProcessing] = useState(false);
 
     const formHandler = async (e) => {
@@ -20,7 +20,7 @@ export default function UpdateModal ({docData, sendOpenStatusToParent, open, onC
 
     const updateDocumentById = async (url) => {
         try {
-            if (url) {
+            if (url != null) {
                 await axios.put(`${process.env.REACT_APP_API_ENDPOINT}/document/${docData.id}`, {
                     nameDocument: title,
                     description: description,
@@ -33,6 +33,8 @@ export default function UpdateModal ({docData, sendOpenStatusToParent, open, onC
                     nameDocument: title,
                     description: description,
                     note,
+                    url: docData.file,
+                    nameVersion: version,
                 })
                 setProgress(100);
             }

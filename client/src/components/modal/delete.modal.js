@@ -25,7 +25,7 @@ export default function DeleteModal ({docData, sendOpenStatusToParent, open, onC
                 <div className="text-center w-56">
                     <div className="mx-auto my-4 w-48">
                         <h3 className=" text-lg font-black text-gray-800">Confirm Delete</h3>
-                        <p className=" text-sm text-gray-500">Are you sure you want delete ?</p>
+                        <p className=" text-sm text-gray-500">Are you sure you want delete {docData.title}?</p>
                     </div>
                     <div className="justify-around flex gap-4">
                         <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => deleteDocumentById(docData.id)}>Delete</button>
