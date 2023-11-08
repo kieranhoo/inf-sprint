@@ -6,32 +6,7 @@ services:
     networks:
       - bridge
     ports:
-      - 8080:8081
-
-  mysql:
-    image: mysql:latest
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: 'root' # TODO: Change this
-      MYSQL_USER: 'user'
-      MYSQL_PASS: 'user'
-    networks:
-      - bridge
-    ports:
-      - 3306:3306
-    volumes:
-      - mysql:/var/lib/mysql
-
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    ports:
-      - 8080:80
-    environment:
-      PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: 'root'
-    depends_on:
-      - mysql
+      - 8081:8081
 
 networks:
   bridge:

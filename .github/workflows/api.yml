@@ -4,11 +4,12 @@ on:
   push:
     branches:
       - stag
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    name: Build Docker Image
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
@@ -26,20 +27,36 @@ jobs:
       - name: Logout from Docker Hub
         run: docker logout
 
-  deploy:
-    needs: build
-    name: Deploy
+  destroy:
+    name: Destroy Preview
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Context
+        uses: okteto/context@latest
+        with:
+          url: ${{secrets.OKTETO_URL}}
+          token: ${{ secrets.RUNNER }}
 
-      - name: Install Okteto Cli
-        run: curl https://get.okteto.com -sSfL | sh
+      - name: Destroy preview environment
+        uses: okteto/destroy-preview@latest
+        with:
+          name: inf-ikierans
 
-      - name: Use default Context
-        run: okteto context --token ${{secrets.RUNNER}} use
+  deploy:
+    needs: [build]
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    steps:
+      - name: Context
+        uses: okteto/context@latest
+        with:
+          url: ${{secrets.OKTETO_URL}}
+          token: ${{ secrets.RUNNER }}
 
-      - name: deploy
-        run: okteto deploy
+      - name: Deploy preview environment
+        uses: okteto/deploy-preview@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: inf-ikierans
+          timeout: 15m
