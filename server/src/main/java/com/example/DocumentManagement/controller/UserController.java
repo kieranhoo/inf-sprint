@@ -29,7 +29,7 @@ public class UserController {
         return ResponseEntity.ok(usersService.getUserById(id));
     }
 
-    @GetMapping("/info")
+    @PostMapping("/info")
     public ResponseEntity<OneUserResponse> getOneUser(
             @RequestBody GetUserInfoRequest getUserInfoRequest
     ) {
