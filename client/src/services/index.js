@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://documentManagement-env.eba-a8rti3dw.ap-southeast-1.elasticbeanstalk.com/api/v1';
+const API_BASE_URL = process.env.REACT_APP_API_ENDPOINT;
 
 const axiosJWT = axios.create({
     baseURL: API_BASE_URL,
