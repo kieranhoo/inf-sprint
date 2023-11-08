@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const UploadPage = () => {
     const [progress, setProgress] = useState(0);
@@ -11,6 +12,7 @@ const UploadPage = () => {
     const [message, setMessage] = useState();
     const [note, setNote] = useState();
     const [isProcessing, setIsProcessing] = useState(false);
+    const user = useSelector((state) => state.auth.user);
 
     const formHandler = async (e) => {
         e.preventDefault();
@@ -26,7 +28,7 @@ const UploadPage = () => {
                 description: description,
                 url,
                 note,
-                departmentId: "1",
+                departmentId: user.departmentId,
                 nameVersion: version,
             })
             setTitle("");
