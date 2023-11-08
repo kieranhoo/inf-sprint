@@ -24,7 +24,7 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
     @Query(value = "SELECT * FROM document where is_deleted = false", nativeQuery = true)
     Page<DocumentEntity> findAllPageByIsDeletedFalse(Pageable pageable);
 
-    @Query(value = "SELECT * FROM document WHERE department_id = ?", nativeQuery = true)
+    @Query(value = "SELECT * FROM document WHERE department_id = ? AND is_deleted = false", nativeQuery = true)
     List<DocumentEntity> findDocumentsByDepartmentId(int id);
 
     @Query(value = "SELECT * FROM document WHERE department_id = ? and name REGEXP ?", nativeQuery = true)
