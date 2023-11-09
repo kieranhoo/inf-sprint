@@ -87,7 +87,7 @@ export const DocDetail = () => {
                                 <h2 className="text-xl font-bold mb-2 text-blue-400">Title: {selectedVersion.title}</h2>
                                 <h4 className="text-md font-bold mb-2 text-blue-400">Document ID: {selectedVersion.id}</h4>
                                 <div className="mb-2">Created Time: {selectedVersion.time}</div>
-                                <div className="mb-2">File: <a href={selectedVersion.file} download className="text-blue-500">{selectedVersion.file}</a></div>
+                                <div className="mb-2">File: <a href={selectedVersion.file} target='__blank' className="text-blue-500">{selectedVersion.file}</a></div>
                                 <div className="mb-2">Description:</div>
                                 <div className="mb-2">{selectedVersion.description}</div>
                                 <div className="mb-2">Department: {selectedVersion.department}</div>
