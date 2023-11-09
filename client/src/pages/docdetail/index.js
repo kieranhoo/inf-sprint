@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 
+
 import DeleteModal from '../../components/modal/delete.modal';
 import UpdateModal from '../../components/modal/update.modal';
 
@@ -110,7 +111,7 @@ export const DocDetail = () => {
                 </>
             )}
             
-            {selectedVersion && <DeleteModal docData={selectedVersion} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModalStatus} onClose = {() => setDeleteModalStatus(false)}>
+            {selectedVersion && <DeleteModal docId={id} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModalStatus} onClose = {() => setDeleteModalStatus(false)}>
             </DeleteModal>}
             {selectedVersion && <UpdateModal docData={selectedVersion} sendOpenStatusToParent={handlerUpdateModalOpen} open={updateModalStatus} onClose = {() => setUpdateModalStatus(false)}>
             </UpdateModal>}
