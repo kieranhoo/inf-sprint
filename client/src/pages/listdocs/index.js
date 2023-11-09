@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 export default function ListDocs() {
     const [documents, setDocuments] = useState([]);
     const user = useSelector((state) => state.auth.user);
-    const navigate = useNavigate();
-
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/document/departments/${user.departmentId}`)
@@ -30,7 +28,7 @@ export default function ListDocs() {
                             <th >ID</th>
                             <th>Name</th>
                             <th>Description</th>
-                            <th>Version</th>
+                            <th>Lastest Version</th>
                             <th>Download</th>
                             <th>Time</th>
                         </tr>
@@ -41,7 +39,7 @@ export default function ListDocs() {
                                 <tr>
                                     <td>{document?.id}</td>
                                     <td className="cursor-pointer text-blue-500" onClick={() => {
-                                        navigate(`/document/${document.id}`)
+                                        window.open(`/document/${document.id}`, '_blank');
                                     }}>
                                         {document?.name}
                                     </td>
