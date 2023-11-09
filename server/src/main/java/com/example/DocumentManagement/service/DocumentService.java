@@ -103,22 +103,20 @@ public class DocumentService extends SupportFunction {
                 createTime,
                 id
         );
-
-        //set field "current version" of another version is false
-        List<VersionEntity> listVersion = versionRepository.findByDocumentIdAndCurrentVersionTrue(id);
-        for (VersionEntity loop : listVersion) {
-            versionRepository.updateCurrentVersion(loop.getId());
+        if(updateDocumentRequest.getUrl() != null && updateDocumentRequest.getNameVersion() != null && updateDocumentRequest.getNote() != null){
+            List<VersionEntity> listVersion = versionRepository.findByDocumentIdAndCurrentVersionTrue(id);
+            for (VersionEntity loop : listVersion) {
+                versionRepository.updateCurrentVersion(loop.getId());
+            }
+            versionRepository.save(new VersionEntity(
+                    id,
+                    updateDocumentRequest.getUrl(),
+                    updateDocumentRequest.getNameVersion(),
+                    true,
+                    createTime,
+                    updateDocumentRequest.getNote()
+            ));
         }
-
-        versionRepository.save(new VersionEntity(
-                id,
-                updateDocumentRequest.getUrl(),
-                updateDocumentRequest.getNameVersion(),
-                true,
-                createTime,
-                updateDocumentRequest.getNote()
-        ));
-
         return new MessageResponse("Update Document SuccessFully!");
     }
 

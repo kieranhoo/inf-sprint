@@ -1,28 +1,20 @@
-import { useState } from 'react'
-import DeleteModal from '../../components/modal/delete.modal';
-import UpdateModal from '../../components/modal/update.modal';
+import { useState, useEffect } from 'react'
+import { useSelector } from 'react-redux';
 import './index.css'
+import { useNavigate } from "react-router-dom";
 
 export default function ListDocs() {
-    const [deleteModalStatus, setDeleteModalStatus] = useState(false);
-    const [updateModalStatus, setUpdateModalStatus] = useState(false);
-    const [doc, setDoc] = useState('');
+    const [documents, setDocuments] = useState([]);
+    const user = useSelector((state) => state.auth.user);
+    const navigate = useNavigate();
 
-    const handlerDeleteModalOpen = (status) => {
-        setDeleteModalStatus(status);
-    }
-    const handlerDelete = (docData) => {
-        setDoc(docData);
-        setDeleteModalStatus(true);
-    } 
 
-    const handlerUpdateModalOpen = (status) => {
-        setUpdateModalStatus(status);
-    }
-    const handlerUpdate = (docData) => {
-        setDoc(docData);
-        setUpdateModalStatus(true);
-    } 
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/document/departments/${user.departmentId}`)
+            .then((response) => response.json())
+            .then((data) => setDocuments(data.listContent))
+            .catch((error) => console.error('Error fetching data:', error));
+    }, []);
 
     return (
         <div className="list-docs">
@@ -32,14 +24,6 @@ export default function ListDocs() {
                 </h1>
             </div>
             <div className=' flex justify-center'>
-                {/* <table className=" w-4/5 text-center">
-                    <tr className=" w-full">
-                        <td className=" w-1/5">ID</td>
-                        <td className=" w-1/5">Name</td>
-                        <td className=" w-1/5">Decs</td>
-                        <td className=" w-1/5">Ver</td>
-                    </tr>
-                </table> */}
                 <table className="table-auto w-4/5 text-center">
                     <thead className="bg-blue-400">
                         <tr className="">
@@ -49,48 +33,31 @@ export default function ListDocs() {
                             <th>Version</th>
                             <th>Download</th>
                             <th>Time</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1961</td>
-                            <td>Malcolm Lockyer</td>
-                            <td>The Sliding Mr. Bones (Next Stop, Pottersville)</td>
-                            <td>1.0.0</td>
-                            <td>Link</td>
-                            <td></td>
-                            <td>
-                                <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerDelete({id:1, nameDocument: 'hello123'})}>Delete</button>
-                                <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => handlerUpdate({id:1, nameDocument: 'hello123'})}>Update</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>1972</td>
-                            <td>Witchy Woman</td>
-                            <td>The Eagles</td>
-                            <td>1.0.0</td>
-                            <td>Link</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>1975</td>
-                            <td>Shining Star</td>
-                            <td>Earth, Wind, and Fire</td>
-                            <td>1.0.0</td>
-                            <td>Link</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
+                        {documents.length > 0 ? (
+                            documents.map((document) => (
+                                <tr>
+                                    <td>{document?.id}</td>
+                                    <td className="cursor-pointer text-blue-500" onClick={() => {
+                                        navigate(`/document/${document.id}`)
+                                    }}>
+                                        {document?.name}
+                                    </td>
+                                    <td>{document?.description}</td>
+                                    <td>{document?.versions[0]?.name}</td>
+                                    <td><a target='__blank' className="text-blue-500 underline" href={document?.versions[0]?.url}>Download link</a></td>
+                                    <td>{document?.createTime}</td>
+                                </tr>))
+                        ) : (
+                            <tr>
+                                <td colSpan={6}>No documents</td>
+                            </tr>
+                        )}
                     </tbody>
                 </table>
             </div>
-
-            <DeleteModal docData={doc} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModalStatus} onClose = {() => setDeleteModalStatus(false)}>
-            </DeleteModal>
-            <UpdateModal docData={doc} sendOpenStatusToParent={handlerUpdateModalOpen} open={updateModalStatus} onClose = {() => setUpdateModalStatus(false)}>
-            </UpdateModal>
         </div>
     )
 }
