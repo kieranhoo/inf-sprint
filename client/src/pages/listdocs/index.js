@@ -55,7 +55,6 @@ export default function ListDocs() {
                             ))
                         ) : (
                             <tr>
-                                {/* // Remove the <td></td> element to not display the cell */}
                                 <td colSpan={6}>No documents found</td>
                             </tr>
                         )}

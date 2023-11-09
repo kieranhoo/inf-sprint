@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
 export default function SearchDoc({ setDocuments, departmentId }) {
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -25,7 +26,7 @@ export default function SearchDoc({ setDocuments, departmentId }) {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className={`border p-2 rounded-md w-full search-input ${inputClass}`}
+                className={`border p-2 rounded-md w-full ${inputClass}`}
                 placeholder="Enter title to search..."
             />
         </div>
