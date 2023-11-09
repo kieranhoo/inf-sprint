@@ -37,7 +37,7 @@ export default function ListDocs() {
                         {documents.length > 0 ? (
                             documents.map((document) => (
                                 <tr>
-                                    <td>{document?.id}</td>
+                                    <td></td>
                                     <td className="cursor-pointer text-blue-500" onClick={() => {
                                         window.open(`/document/${document.id}`, '_blank');
                                     }}>
