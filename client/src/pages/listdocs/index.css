@@ -2,7 +2,14 @@
     font-family: Futura, "Trebuchet MS", Arial, sans-serif;
 }
 
-
 .content{
     color: #A00000;
+}
+
+body {
+    counter-reset: index;
+}
+
+table {
+    border-collapse: separate;
 }

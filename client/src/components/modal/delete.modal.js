@@ -1,11 +1,14 @@
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-export default function DeleteModal ({docData, sendOpenStatusToParent, open, onClose}) {
+export default function DeleteModal ({docId, sendOpenStatusToParent, open, onClose}) {
+    const navigate = useNavigate();
+
     const deleteDocumentById = async (id) => {
         try {
             await axios.delete(`${process.env.REACT_APP_API_ENDPOINT}/document/${id}`);
             sendOpenStatusToParent(false);
-            window.location.reload(true);
+            navigate('/dashboard');
         } catch (error) {
             console.error(`Error deleting data with ID ${id}:`, error);
         }
@@ -26,10 +29,10 @@ export default function DeleteModal ({docData, sendOpenStatusToParent, open, onC
                 <div className="text-center w-56">
                     <div className="mx-auto my-4 w-48">
                         <h3 className=" text-lg font-black text-gray-800">Confirm Delete</h3>
-                        <p className=" text-sm text-gray-500">Are you sure you want delete {docData.title}?</p>
+                        <p className=" text-sm text-gray-500">Are you sure you want delete this document?</p>
                     </div>
                     <div className="justify-around flex gap-4">
-                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => deleteDocumentById(docData.id)}>Delete</button>
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" onClick={() => deleteDocumentById(docId)}>Delete</button>
                         <button className="text-gray-500 bg-gray-100 hover:bg-gray-200 font-bold py-2 px-4 rounded" onClick={() => sendOpenStatusToParent(false)}>Cancel</button>
                     </div>
                 </div>
