@@ -157,6 +157,21 @@ public class DocumentService extends SupportFunction {
     public ListResponse getDocumentsByDepartmentId(String idFromPathVariable) {
         int id = checkRequest(idFromPathVariable);
         List<DocumentEntity> documents = documentRepository.findDocumentsByDepartmentId(id);
+        return getListResponse(documents);
+    }
+
+    public ListResponse searchDocuments(Integer departmentID, String keyword) {
+        if(keyword == null){
+            keyword = "";
+        }
+        if(keyword.equals("")){
+            return getDocumentsByDepartmentId(departmentID.toString());
+        }
+        List<DocumentEntity> documents = documentRepository.searchDocuments(departmentID, keyword);
+        return getListResponse(documents);
+    }
+
+    private ListResponse getListResponse(List<DocumentEntity> documents) {
         List<DocumentResponse> list = new ArrayList<>();
         for (DocumentEntity loop : documents) {
             List<VersionEntity> listVersion = versionRepository.findByDocumentIdAndCurrentVersionTrue(loop.getId());
@@ -170,10 +185,5 @@ public class DocumentService extends SupportFunction {
             ));
         }
         return new ListResponse(list);
-    }
-
-    public ListResponse searchDocuments(Integer departmentID, String keyword) {
-        List<DocumentEntity> documents = documentRepository.searchDocuments(departmentID, keyword);
-        return new ListResponse(documents);
     }
 }

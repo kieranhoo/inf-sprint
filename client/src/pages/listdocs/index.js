@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux';
 import './index.css'
+import SearchDoc from '../../components/searchDoc'
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from 'react-paginate';
 import { Skeleton } from '../../components/skeleton';
@@ -42,13 +43,17 @@ export default function ListDocs() {
                 </h1>
             </div>
             <div className=' flex justify-center flex-col items-center gap-12'>
+            <div className="flex justify-center">
+                <SearchDoc setDocuments={setDocuments} departmentId={user.departmentId} />
+            </div>
+            <div className=' flex justify-center'>
                 <table className="table-auto w-4/5 text-center">
                     <thead className="bg-blue-400">
                         <tr className="">
                             <th >ID</th>
                             <th>Name</th>
                             <th>Description</th>
-                            <th>Version</th>
+                            <th>Lastest Version</th>
                             <th>Download</th>
                             <th>Time</th>
                         </tr>
@@ -57,7 +62,7 @@ export default function ListDocs() {
                         {curdocs.length > 0 ? (
                             curdocs.map((document) => (
                                 <tr>
-                                    <td>{document?.id}</td>
+                                    <td>{index + 1}</td>
                                     <td className="cursor-pointer text-blue-500" onClick={() => {
                                         navigate(`/document/${document.id}`)
                                     }}>
@@ -67,7 +72,8 @@ export default function ListDocs() {
                                     <td>{document?.versions[0]?.name}</td>
                                     <td><a target='__blank' className="text-blue-500 underline" href={document?.versions[0]?.url}>Download link</a></td>
                                     <td>{document?.createTime}</td>
-                                </tr>))
+                                </tr>
+                            ))
                         ) : (
                           <Skeleton/>
                         )}

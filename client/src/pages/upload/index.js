@@ -3,6 +3,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import {useNavigate} from 'react-router-dom'
 
 const UploadPage = () => {
     const [progress, setProgress] = useState(0);
@@ -13,6 +14,7 @@ const UploadPage = () => {
     const [note, setNote] = useState();
     const [isProcessing, setIsProcessing] = useState(false);
     const user = useSelector((state) => state.auth.user);
+    const navigate = useNavigate();
 
     const formHandler = async (e) => {
         e.preventDefault();
@@ -36,6 +38,7 @@ const UploadPage = () => {
             setDescription("");
             setMessage("Document upload successfully");
             setIsProcessing(false);
+            navigate('/dashboard');
         } catch (err) {
             setMessage("Something went wrong");
         }
@@ -65,35 +68,35 @@ const UploadPage = () => {
     };
 
     return (
-        <div className="App">
-
-            <section className="max-w-4xl p-6 mx-auto bg-indigo-500 rounded-md shadow-md dark:bg-gray-800 mt-20">
-                <h1 className="text-xl font-bold text-white capitalize dark:text-white">Upload new document</h1>
-                <form onSubmit={formHandler}>
-                    <div className="mt-4">
-                        <div>
-                            <label className="text-white dark:text-gray-200" htmlFor="title">Title</label>
-                            <input id="title" type="text" onChange={(e) => setTitle(e.target.value)} class="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring" />
-                        </div>
+        <div className="App flex justify-center items-center">
+            <section className="bg-white w-1/3 rounded-xl shadow">
+                <h1 className="text-3xl mt-8 font-bold text-blue-500 capitalize text-dark">Upload new document</h1>
+                <form onSubmit={formHandler} className="bg-white shadow-md rounded-xl px-8 pt-3 pb-8 w-full">
+                    <div class="mb-4">
+                        <label class="flex text-gray-700 text-sm font-bold mb-2" for="title">
+                            Title
+                        </label>
+                        <input id="title" type="text" placeholder="title" onChange={(e) => setTitle(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
                     </div>
-                    <br />
-                    <div>
-                        <label className="text-white dark:text-gray-200" htmlFor="description">Description</label>
-                        <textarea id="description" type="textarea" onChange={(e) => setDescription(e.target.value)} className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"></textarea>
+                    <div class="mb-4">
+                        <label class="flex text-gray-700 text-sm font-bold mb-2" for="description">
+                            Description
+                        </label>
+                        <input id="description" type="textarea" placeholder="description" onChange={(e) => setDescription(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
                     </div>
-                    <br />
-                    <div>
-                        <label className="text-white dark:text-gray-200" htmlFor="note">Note</label>
-                        <textarea id="note" type="textarea" onChange={(e) => setNote(e.target.value)} className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring"></textarea>
+                    <div class="mb-4">
+                        <label class="flex text-gray-700 text-sm font-bold mb-2" for="description">
+                            Note
+                        </label>
+                        <input id="note" type="textarea" placeholder="note" onChange={(e) => setNote(e.target.value)} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
                     </div>
-                    <br />
-                    <div>
-                        <label className="block text-sm font-medium text-white">
+                    <div class="mb-6">
+                        <label className="flex text-gray-700 text-sm font-bold mb-2">
                             File
                         </label>
                         <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                             <div className="space-y-1 text-center">
-                                <svg className="mx-auto h-12 w-12 text-white" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                <svg className="mx-auto h-12 w-12 text-gray-700" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                                 <div className="flex text-sm text-gray-600">
@@ -101,15 +104,13 @@ const UploadPage = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        {isProcessing ? <h2 className='text-gray-700'>Uploading done {progress}%</h2>
+                            : null}
+                        <div className="message text-gray-700">{progress === 100 ? <p>{message}</p> : null}</div>
+                    </div>  
 
-                    <br />
-                    {isProcessing ? <h2 className='text-white'>Uploading done {progress}%</h2>
-                        : null}
-                    <div className="message text-white">{progress === 100 ? <p>{message}</p> : null}</div>
-
-                    <div className="flex justify-end mt-6">
-                        <button className="px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-pink-500 rounded-md hover:bg-pink-700 focus:outline-none focus:bg-gray-600">Save</button>
+                    <div className='justify-center flex'>
+                            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save</button>                        
                     </div>
                 </form>
             </section>
