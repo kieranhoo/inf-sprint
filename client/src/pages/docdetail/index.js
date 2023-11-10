@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 import DeleteModal from '../../components/modal/delete.modal';
@@ -13,7 +13,6 @@ export const DocDetail = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [documents, setDocuments] = useState([]);
     const [selectedVersion, setSelectedVersion] = useState();
-
     const handlerDeleteModalOpen = (status) => {
         setDeleteModalStatus(status);
     }
@@ -100,19 +99,19 @@ export const DocDetail = () => {
                                     <div className='flex justify-around w-56'>
                                         <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' onClick={() => setUpdateModalStatus(true)}>Update</button>
                                         <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => setDeleteModalStatus(true)}>Delete</button>
-                                    </div>  
+                                    </div>
                                 </div>
                             </div>
                         ) : (
                             <div className="text-center">No versions found</div>
                         )}
-                    </div>   
+                    </div>
                 </>
             )}
-            
-            {selectedVersion && <DeleteModal docData={selectedVersion} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModalStatus} onClose = {() => setDeleteModalStatus(false)}>
+
+            {selectedVersion && <DeleteModal docData={selectedVersion} sendOpenStatusToParent={handlerDeleteModalOpen} open={deleteModalStatus} onClose={() => setDeleteModalStatus(false)}>
             </DeleteModal>}
-            {selectedVersion && <UpdateModal docData={selectedVersion} sendOpenStatusToParent={handlerUpdateModalOpen} open={updateModalStatus} onClose = {() => setUpdateModalStatus(false)}>
+            {selectedVersion && <UpdateModal docData={selectedVersion} sendOpenStatusToParent={handlerUpdateModalOpen} open={updateModalStatus} onClose={() => setUpdateModalStatus(false)}>
             </UpdateModal>}
         </div>
     );
