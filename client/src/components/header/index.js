@@ -29,7 +29,7 @@ export default function Header() {
     }, [isAuthenticated]) // eslint-disable-line react-hooks/exhaustive-deps
     const active = useMemo(() => "!text-blue-400 after:!w-[80%]", [])
     return (
-        <div className="bg-white shadow-md">
+        <div className="bg-white shadow-md fixed w-full top-0">
             <div className="container flex flex-row h-[100px] py-[15px] items-center">
                 <div className="w-1/4 text-xl font-bold text-blue-400">
                     Documentations Mangement
