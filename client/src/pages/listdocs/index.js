@@ -42,36 +42,36 @@ export default function ListDocs() {
                     Government Office <br /> Documents
                 </h1>
             </div>
-            <div className=' flex justify-center flex-col items-center gap-12'>
-                <div className="flex justify-center">
+            <div className='flex justify-center flex-col items-center gap-12 w-full'>
+                <div className="flex justify-center w-full">
                     <SearchDoc setDocuments={setDocuments} departmentId={user.departmentId} />
                 </div>
-                <div className=' flex justify-center'>
-                    <table className="table-auto w-4/5 text-center">
+                <div className=' flex justify-center flex-col items-center gap-12 w-full'>
+                    <table className="table-auto w-4/5 text-center border border-black">
                         <thead className="bg-blue-400">
                             <tr className="">
-                                <th >ID</th>
-                                <th>Name</th>
-                                <th>Description</th>
-                                <th>Lastest Version</th>
-                                <th>Download</th>
-                                <th>Time</th>
+                                <th className="border border-black" >ID</th>
+                                <th className="border border-black">Name</th>
+                                <th className="border border-black">Description</th>
+                                <th className="border border-black">Lastest Version</th>
+                                <th className="border border-black">Download</th>
+                                <th className="border border-black"> Time</th>
                             </tr>
                         </thead>
                         <tbody>
                             {curdocs.length > 0 ? (
                                 curdocs.map((document, index) => (
                                     <tr key={index}>
-                                        <td>{index + 1}</td>
-                                        <td className="cursor-pointer text-blue-500" onClick={() => {
+                                        <td className="border border-black">{index + 1}</td>
+                                        <td className="border border-black cursor-pointer text-blue-500" onClick={() => {
                                             navigate(`/document/${document.id}`)
                                         }}>
                                             {document?.name}
                                         </td>
-                                        <td>{document?.description}</td>
-                                        <td>{document?.versions[0]?.name}</td>
-                                        <td><a target='__blank' className="text-blue-500 underline" href={document?.versions[0]?.url}>Download link</a></td>
-                                        <td>{document?.createTime}</td>
+                                        <td className="border border-black">{document?.description}</td>
+                                        <td className="border border-black">{document?.versions[0]?.name}</td>
+                                        <td className="border border-black"><a target='__blank' className="text-blue-500 underline" href={document?.versions[0]?.url}>Download link</a></td>
+                                        <td className="border border-black">{document?.createTime}</td>
                                     </tr>
                                 ))
                             ) : (
