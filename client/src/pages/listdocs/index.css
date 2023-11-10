@@ -13,8 +13,3 @@ body {
 table {
     border-collapse: separate;
 }
-
-tr td:first-child::before {
-    counter-increment: index;
-    content: counter(index);
-}

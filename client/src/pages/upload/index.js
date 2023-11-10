@@ -69,9 +69,8 @@ const UploadPage = () => {
 
     return (
         <div className="App flex justify-center items-center">
-
             <section className="bg-white w-1/3 rounded-xl shadow">
-                <h1 className="text-3xl mt-8 font-bold text-blue-500 capitalize dark:text-white">Upload new document</h1>
+                <h1 className="text-3xl mt-8 font-bold text-blue-500 capitalize text-dark">Upload new document</h1>
                 <form onSubmit={formHandler} className="bg-white shadow-md rounded-xl px-8 pt-3 pb-8 w-full">
                     <div class="mb-4">
                         <label class="flex text-gray-700 text-sm font-bold mb-2" for="title">
