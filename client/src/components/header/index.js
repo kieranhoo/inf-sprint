@@ -14,6 +14,7 @@ export default function Header() {
     const handleNavigate = (url) => {
         navigate(url)
     }
+    const user = useSelector(state => state.auth.user)
     const access_token = useSelector(selectAccessToken)
     const isAuthenticated = useSelector(selectIsAuthenticated)
     const dispatch = useDispatch()
@@ -35,7 +36,7 @@ export default function Header() {
                 </div>
                 <div className="w-3/4 flex flex-row gap-4 justify-between">
                     <div className="w-1/6"></div>
-                    <div className="w-4/6 flex gap-6 items-center">
+                    <div className="w-3/6 flex gap-6 items-center">
                         <div onClick={() => handleNavigate("/dashboard")} className={`relative after:absolute after:bottom-0 inline-flex w-fit justify-center rounded-md px-4 py-2 text-md focus:outline-none text-black after:w-0 hover:after:w-[80%] after:bg-blue-400 after:h-[2px] hover:text-blue-400 cursor-pointer after:transition-all after:duration-300 ${location.pathname === "/dashboard" ? active : ""}`}>
                             Dashboard
                         </div>
@@ -43,11 +44,14 @@ export default function Header() {
                             Upload
                         </div>
                     </div>
-                    <Menu as="div" className="relative inline-block text-left">
-                        <div>
-                            <Menu.Button className="inline-flex w-full justify-center rounded-md px-4 py-2 text-md focus:outline-none text-black after:w-0 hover:after:w-full after:bg-blue-400 after:h-[2px] transition-all duration-300">
+                    <Menu as="div" className="w-2/6 relative inline-block text-left">
+                        <div className="flex items-center justify-end gap-4">
+                            <Menu.Button className="inline-flex w-fit justify-center rounded-md px-4 py-2 text-md focus:outline-none text-black after:w-0 hover:after:w-full after:bg-blue-400 after:h-[2px] transition-all duration-300">
                                 <img className="w-[60px] h-[60px]" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcZsL6PVn0SNiabAKz7js0QknS2ilJam19QQ&usqp=CAU" alt="avatar"></img>
                             </Menu.Button>
+                            <div>
+                                {user?.userName}
+                            </div>
                         </div>
                         <Transition
                             as={Fragment}
@@ -67,7 +71,7 @@ export default function Header() {
                                                 className={`${active ? 'bg-violet-500 text-white' : 'text-gray-900'
                                                     } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
                                             >
-                                                <AiOutlinePoweroff className="mr-3"/>
+                                                <AiOutlinePoweroff className="mr-3" />
                                                 Log out
                                             </button>
                                         )}
