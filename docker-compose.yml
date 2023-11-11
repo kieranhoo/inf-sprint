@@ -8,6 +8,14 @@ services:
     ports:
       - 8081:8081
 
+  client:
+    image: duchungho/client-inf:latest
+    restart: always
+    networks:
+      - bridge
+    ports:
+      - 3000:3000
+
 networks:
   bridge:
 volumes:
