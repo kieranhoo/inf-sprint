@@ -20,8 +20,8 @@ export default function SearchDoc({ setDocuments, departmentId }) {
     const inputClass = searchTerm ? 'border-blue-500' : 'border-gray-300';
 
     return (
-        <div className="mb-4 w-4/5">
-            <label className="block text-sm font-medium text-gray-600 mb-1">Search documents:</label>
+        <div className="w-4/5 mb-4">
+            <label className="block mb-1 text-sm font-medium text-gray-600">Search documents:</label>
             <input
                 type="text"
                 value={searchTerm}
