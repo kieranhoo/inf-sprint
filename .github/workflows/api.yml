@@ -37,11 +37,11 @@ jobs:
         run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/client-inf:${{ github.event.number }} .
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/client-inf:latest .
         working-directory: ./client
 
       - name: Push Docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/client-inf:${{ github.event.number }}
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/client-inf:latest
 
       - name: Logout from Docker Hub
         run: docker logout
