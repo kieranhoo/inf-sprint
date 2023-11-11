@@ -82,7 +82,7 @@ export default function ListDocs() {
                         curdocs?.length === 0 ? "" :
                             <ReactPaginate
                                 containerClassName={"flex flex-row gap-4"}
-                                pageClassName={"px-3 px-3 py-1 rounded-[5px] bg-gray-400 py-1 rounded-[5px] transition duration-500"}
+                                pageClassName={"li-pagination rounded-[5px] bg-gray-400 rounded-[5px] transition duration-500"}
                                 activeClassName={"text-black !bg-blue-400 !text-white"}
                                 breakLabel="..."
                                 onPageChange={handlePageChange}
