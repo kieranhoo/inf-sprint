@@ -5,6 +5,7 @@ import SearchDoc from '../../components/searchDoc'
 import { useNavigate } from "react-router-dom";
 import ReactPaginate from 'react-paginate';
 import { Skeleton } from '../../components/skeleton';
+import { toast } from "react-toastify"
 
 export default function ListDocs() {
     const [documents, setDocuments] = useState([]);
@@ -13,12 +14,16 @@ export default function ListDocs() {
     const navigate = useNavigate();
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [error, setError] = useState(false)
     const itemsPerPage = 10;
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/document/departments/${user?.departmentId}`)
             .then((response) => response.json())
             .then((data) => {
+                if (data.listContent.length === 0) {
+                    toast.error('Không có data')
+                }
                 setDocuments(data.listContent)
                 setTotalPages(Math.ceil((data.listContent.length) / itemsPerPage))
                 setCurDocs(data.listContent.slice(0, 9))
@@ -32,7 +37,9 @@ export default function ListDocs() {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
         setCurDocs(documents.slice(startIndex, endIndex))
+        setTotalPages(Math.ceil((documents.length) / itemsPerPage))
     }, [currentPage, documents])
+
 
     return (
         <div className="list-docs">
@@ -43,7 +50,7 @@ export default function ListDocs() {
             </div>
             <div className='flex flex-col items-center justify-center w-full gap-12'>
                 <div className="flex justify-center w-full">
-                    <SearchDoc setDocuments={setDocuments} departmentId={user?.departmentId} />
+                    <SearchDoc setDocuments={setDocuments} departmentId={user?.departmentId} setError={setError} />
                 </div>
                 <div className='flex flex-col items-center justify-center w-full gap-12 '>
                     <table className="w-4/5 text-center border border-black table-auto">
@@ -58,7 +65,7 @@ export default function ListDocs() {
                             </tr>
                         </thead>
                         <tbody>
-                            {curdocs.length > 0 ? (
+                            {!error && curdocs.length > 0 ? (
                                 curdocs.map((document, index) => (
                                     <tr key={index}>
                                         <td className="border border-black">{index + 1}</td>
@@ -74,12 +81,17 @@ export default function ListDocs() {
                                     </tr>
                                 ))
                             ) : (
-                                <Skeleton />
+                                !error && <Skeleton />
                             )}
                         </tbody>
                     </table>
                     {
-                        curdocs?.length === 0 ? "" :
+                        error ? <div className="flex w-full justify-center">
+                            No documents found
+                        </div> : ""
+                    }
+                    {
+                        curdocs?.length === 0 || error ? "" :
                             <ReactPaginate
                                 containerClassName={"flex flex-row gap-4"}
                                 pageClassName={"li-pagination rounded-[5px] bg-gray-400 rounded-[5px] transition duration-500"}
