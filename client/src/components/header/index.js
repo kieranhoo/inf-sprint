@@ -29,14 +29,14 @@ export default function Header() {
     }, [isAuthenticated]) // eslint-disable-line react-hooks/exhaustive-deps
     const active = useMemo(() => "!text-blue-400 after:!w-[80%]", [])
     return (
-        <div className="bg-white shadow-md fixed w-full top-0">
+        <div className="fixed top-0 w-full bg-white shadow-md">
             <div className="container flex flex-row h-[100px] py-[15px] items-center">
                 <div className="w-1/4 text-xl font-bold text-blue-400">
                     Documentations Mangement
                 </div>
-                <div className="w-3/4 flex flex-row gap-4 justify-between">
+                <div className="flex flex-row justify-between w-3/4 gap-4">
                     <div className="w-1/6"></div>
-                    <div className="w-3/6 flex gap-6 items-center">
+                    <div className="flex items-center w-3/6 gap-6">
                         <div onClick={() => handleNavigate("/dashboard")} className={`relative after:absolute after:bottom-0 inline-flex w-fit justify-center rounded-md px-4 py-2 text-md focus:outline-none text-black after:w-0 hover:after:w-[80%] after:bg-blue-400 after:h-[2px] hover:text-blue-400 cursor-pointer after:transition-all after:duration-300 ${location.pathname === "/dashboard" ? active : ""}`}>
                             Dashboard
                         </div>
@@ -44,7 +44,7 @@ export default function Header() {
                             Upload
                         </div>
                     </div>
-                    <Menu as="div" className="w-2/6 relative inline-block text-left">
+                    <Menu as="div" className="relative inline-block w-2/6 text-left">
                         <div className="flex items-center justify-end gap-4">
                             <Menu.Button className="inline-flex w-fit justify-center rounded-md px-4 py-2 text-md focus:outline-none text-black after:w-0 hover:after:w-full after:bg-blue-400 after:h-[2px] transition-all duration-300">
                                 <img className="w-[60px] h-[60px]" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcZsL6PVn0SNiabAKz7js0QknS2ilJam19QQ&usqp=CAU" alt="avatar"></img>
@@ -62,7 +62,7 @@ export default function Header() {
                             leaveFrom="transform opacity-100 scale-100"
                             leaveTo="transform opacity-0 scale-95"
                         >
-                            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                            <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black/5 focus:outline-none">
                                 <div className="px-1 py-1 ">
                                     <Menu.Item>
                                         {({ active }) => (

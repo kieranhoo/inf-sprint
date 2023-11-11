@@ -16,7 +16,7 @@ export default function ListDocs() {
     const itemsPerPage = 10;
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_ENDPOINT}/document/departments/${user.departmentId}`)
+        fetch(`${process.env.REACT_APP_API_ENDPOINT}/document/departments/${user?.departmentId}`)
             .then((response) => response.json())
             .then((data) => {
                 setDocuments(data.listContent)
@@ -31,23 +31,22 @@ export default function ListDocs() {
     useEffect(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        // console.log(documents.slice(startIndex, endIndex), documents, startIndex, endIndex)
         setCurDocs(documents.slice(startIndex, endIndex))
     }, [currentPage, documents])
 
     return (
         <div className="list-docs">
             <div className='text-center'>
-                <h1 className=" font-bold mt-10 mb-10 text-4xl content">
+                <h1 className="mt-10 mb-10 text-4xl font-bold content">
                     Government Office <br /> Documents
                 </h1>
             </div>
-            <div className='flex justify-center flex-col items-center gap-12 w-full'>
+            <div className='flex flex-col items-center justify-center w-full gap-12'>
                 <div className="flex justify-center w-full">
-                    <SearchDoc setDocuments={setDocuments} departmentId={user.departmentId} />
+                    <SearchDoc setDocuments={setDocuments} departmentId={user?.departmentId} />
                 </div>
-                <div className=' flex justify-center flex-col items-center gap-12 w-full'>
-                    <table className="table-auto w-4/5 text-center border border-black">
+                <div className='flex flex-col items-center justify-center w-full gap-12 '>
+                    <table className="w-4/5 text-center border border-black table-auto">
                         <thead className="bg-blue-400">
                             <tr className="">
                                 <th className="border border-black" >ID</th>
@@ -63,7 +62,7 @@ export default function ListDocs() {
                                 curdocs.map((document, index) => (
                                     <tr key={index}>
                                         <td className="border border-black">{index + 1}</td>
-                                        <td className="border border-black cursor-pointer text-blue-500" onClick={() => {
+                                        <td className="text-blue-500 border border-black cursor-pointer" onClick={() => {
                                             navigate(`/document/${document.id}`)
                                         }}>
                                             {document?.name}
