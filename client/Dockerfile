@@ -4,7 +4,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN cp ./deployments/.env.stag .env
+RUN touch .env
+COPY ./deployments/.env.stag .env
 
 RUN npm install
 
