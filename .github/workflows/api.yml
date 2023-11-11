@@ -1,9 +1,9 @@
-name: Build API Server
+name: Deploy API & Client
 
 on:
   push:
     branches:
-      - stag
+      - master
 
 jobs:
   build-api:
@@ -59,7 +59,7 @@ jobs:
       - name: Destroy preview environment
         uses: okteto/destroy-preview@latest
         with:
-          name: inf-stag-ikierans
+          name: inf-ikierans
 
   deploy-server:
     needs: [build-api]
@@ -77,7 +77,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: inf-stag-ikierans
+          name: inf-ikierans
           timeout: 15m
 
   deploy-client:
@@ -96,5 +96,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: inf-stag-ikierans
+          name: inf-ikierans
           timeout: 15m
