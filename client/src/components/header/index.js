@@ -1,5 +1,5 @@
 import { Menu, Transition } from '@headlessui/react'
-import { Fragment, useMemo, useEffect } from 'react'
+import { Fragment, useMemo, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectAccessToken, selectIsAuthenticated } from "../../redux/selectors";
 import { logoutRequest } from '../../redux/reducers/authSlice';
 import { AiOutlinePoweroff } from "react-icons/ai"
+import axios from 'axios';
 
 export default function Header() {
     const navigate = useNavigate()
@@ -21,7 +22,14 @@ export default function Header() {
     const logout = () => {
         dispatch(logoutRequest(access_token))
     }
+    const [departmentname, setDepartmentname] = useState("")
     useEffect(() => {
+        axios.get(`${process.env.REACT_APP_API_ENDPOINT}/department/${user.departmentId}`).then((response) => {
+            setDepartmentname(response.data.name);
+        }).catch((error) => console.error('Error fetching data:', error));
+    }, [])
+    useEffect(() => {
+        console.log(user)
         if (isAuthenticated === false) {
             toast.success('Đăng xuất thành công')
             navigate('/')
@@ -29,7 +37,7 @@ export default function Header() {
     }, [isAuthenticated]) // eslint-disable-line react-hooks/exhaustive-deps
     const active = useMemo(() => "!text-blue-400 after:!w-[80%]", [])
     return (
-        <div className="fixed top-0 w-full bg-white shadow-md">
+        <div className="fixed top-0 w-full bg-white shadow-md z-[50]">
             <div className="container flex flex-row h-[100px] py-[15px] items-center">
                 <div className="w-1/4 text-xl font-bold text-blue-400">
                     Documentations Mangement
@@ -46,6 +54,9 @@ export default function Header() {
                     </div>
                     <Menu as="div" className="relative inline-block w-2/6 text-left">
                         <div className="flex items-center justify-end gap-4">
+                            <div>
+                                {departmentname}
+                            </div>
                             <Menu.Button className="inline-flex w-fit justify-center rounded-md px-4 py-2 text-md focus:outline-none text-black after:w-0 hover:after:w-full after:bg-blue-400 after:h-[2px] transition-all duration-300">
                                 <img className="w-[60px] h-[60px]" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcZsL6PVn0SNiabAKz7js0QknS2ilJam19QQ&usqp=CAU" alt="avatar"></img>
                             </Menu.Button>
