@@ -1,0 +1,21 @@
+name: Deploy API & Client
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-server:
+    # needs: [build-api]
+    name: Deploy Preview API
+    runs-on: self-hosted
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        run: docker compose down
+
+      - name: Login to Docker Hub
+        run: docker compose up -d
