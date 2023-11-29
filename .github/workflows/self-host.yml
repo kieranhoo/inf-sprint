@@ -3,19 +3,21 @@ name: Deploy API & Client
 on:
   push:
     branches:
-      - master
+      - ready
 
 jobs:
   deploy-server:
-    # needs: [build-api]
     name: Deploy Preview API
     runs-on: self-hosted
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Login to Docker Hub
+      - name: Remove container
         run: docker compose down
 
-      - name: Login to Docker Hub
+      - name: Remove images
+        run: docker rmi -f duchungho/inf-sprint & docker rmi -f duchungho/client-inf:latest
+
+      - name: Start container
         run: docker compose up -d

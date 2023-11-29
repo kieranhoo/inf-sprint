@@ -25,8 +25,8 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: yourdb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: document-db
       MYSQL_PASSWORD: password
     networks:
       - bridge
@@ -41,7 +41,7 @@ services:
       - "8090:80"
     environment:
       PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
     networks:
       - bridge
 
