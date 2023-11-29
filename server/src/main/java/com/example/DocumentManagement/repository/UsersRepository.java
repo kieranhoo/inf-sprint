@@ -10,6 +10,9 @@ import java.util.Optional;
 public interface UsersRepository extends JpaRepository<UsersEntity, Integer> {
     Optional<UsersEntity> findByUsernameOrEmailAndIsDeletedFalse(String username, String email);
 
+    @Query(value = "SELECT * FROM users  WHERE (user_name = ? OR email = ?) and is_deleted = false", nativeQuery = true)
+    UsersEntity findByUsernameOrEmail(String username, String email);
+
     @Query(value = "SELECT * FROM users  WHERE id = ?1 and is_deleted = false", nativeQuery = true)
     UsersEntity findUserById(int userId);
 
