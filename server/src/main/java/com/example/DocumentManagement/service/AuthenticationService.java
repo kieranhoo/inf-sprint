@@ -39,8 +39,12 @@ public class AuthenticationService extends SupportFunction {
     private final AuthenticationManager authenticationManager;
 
     public MessageResponse register(UserCreateRequest userCreateRequest){
+        if(userCreateRequest.getEmail().equals("") || userCreateRequest.getPassword().equals("")) {
+            throw new BadRequestException("Email or Password must not be empty.");
+        }
+
         String[] name = userCreateRequest.getEmail().split("@");
-        UsersEntity userCheck = userRepository.findByUsernameOrEmailAndIsDeletedFalse(name[0], userCreateRequest.getEmail()).orElse(null);
+        UsersEntity userCheck = userRepository.findByUsernameOrEmail(name[0], userCreateRequest.getEmail());
         if (userCheck != null)
             throw new ConflictException("User name or email already exists");
 
