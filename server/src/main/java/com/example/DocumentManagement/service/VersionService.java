@@ -33,8 +33,4 @@ public class VersionService extends SupportFunction {
         String latestResponse = versionRepository.findLatestVersionByDocumentId(id);
         return new MessageResponse(latestResponse);
     }
-
-    public MessageResponse helloWorld(){
-        return new MessageResponse("Hello World!!!!!!!!!!!!!!!!");
-    }
 }
