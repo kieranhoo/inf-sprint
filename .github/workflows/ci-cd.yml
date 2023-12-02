@@ -8,6 +8,7 @@ on:
 env:
   IMAGE_NAME_SERVER: inf-sprint
   IMAGE_NAME_CLIENT: client-inf
+  ENV_SERVER: ./server/src/main/resources/application.properties
 
 jobs:
   test-api:
@@ -39,7 +40,7 @@ jobs:
         run: cd server && ls -la && mvn test
 
   build-server-image:
-    # needs: [test-api]
+    needs: [test-api]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -69,7 +70,7 @@ jobs:
         run: docker logout
 
   build-client-image:
-    # needs: [test-api]
+    needs: [test-api]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -98,40 +99,46 @@ jobs:
       - name: Logout from Docker Hub
         run: docker logout
 
-  # deploy-server:
+  deploy-server:
+    # needs: [build-api]
+    name: Deploy Preview API
+    runs-on: self-hosted
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: ENV file
+        run: rm ${{env.ENV_SERVER}} && \
+          echo 'server.port=${{ secrets.SERVER_PORT }}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.url=${{ secrets.DATA_SRC_URL }}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.username=${{env.DATA_SRC_USERNAME}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.password=${{env.DATA_SRC_PASSWORD}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.driver-class-name=${{env.DRIVER_CLASSNAME}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.jpa.hibernate.ddl-auto=${{env.DDL_AUTO}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.jpa.properties.hibernate.dialect=${{env.DIALECT}}' >> ${{env.ENV_SERVER}} && \
+          echo 'application.security.jwt.secret-key=${{env.JWT_SECRET_KEY}}' >> ${{env.ENV_SERVER}} && \
+          echo 'application.security.jwt.expiration=${{env.JWT_EXP}}' >> ${{env.ENV_SERVER}} && \
+          echo 'application.security.jwt.refresh-token.expiration=${{env.JWT_REFRESH_EXP}}' >> ${{env.ENV_SERVER}}
+
+      # - name: Login to Docker Hub
+      #   run: docker compose down
+
+      # - name: Login to Docker Hub
+      #   run: docker compose up -d
+
+  # deploy-client:
   #   # needs: [build-api]
   #   name: Deploy Preview API
   #   runs-on: self-hosted
   #   steps:
-  #     - name: Context
-  #       uses: okteto/context@latest
-  #       with:
-  #         url: ${{secrets.OKTETO_URL}}
-  #         token: ${{ secrets.RUNNER }}
+  #     - name: Checkout source code
+  #       uses: actions/checkout@v4
 
-  #     - name: Deploy preview environment
-  #       uses: okteto/deploy-preview@latest
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         name: inf-ikierans
-  #         timeout: 15m
+  #     - name: ENV file
+  #       run: echo ${{ secrets.DOCKERHUB_USERNAME }} > application.properties
 
-  # deploy-client:
-  #   # needs: [build-client]
-  #   name: Deploy Preview Client
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Context
-  #       uses: okteto/context@latest
-  #       with:
-  #         url: ${{secrets.OKTETO_URL}}
-  #         token: ${{ secrets.RUNNER }}
+  #     - name: Login to Docker Hub
+  #       run: docker compose down
 
-  #     - name: Deploy preview environment
-  #       uses: okteto/deploy-preview@latest
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         name: inf-ikierans
-  #         timeout: 15m
+  #     - name: Login to Docker Hub
+  #       run: docker compose up -d
