@@ -12,6 +12,4 @@ RUN ./mvnw dependency:go-offline
 
 COPY src ./src
 
-COPY ./deployments/application.properties ./src/main/resources/application.properties
-
 CMD [ "./mvnw", "spring-boot:run" ]

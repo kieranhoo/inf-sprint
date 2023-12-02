@@ -71,7 +71,6 @@ jobs:
         run: docker logout
 
   build-client-image:
-    needs: [test-api]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -101,7 +100,7 @@ jobs:
         run: docker logout
 
   deploy-server:
-    # needs: [build-api]
+    needs: [test-api, build-server-image]
     name: Deploy Preview API
     runs-on: self-hosted
     steps:
@@ -122,14 +121,17 @@ jobs:
           echo 'application.security.jwt.expiration=${{secrets.JWT_EXP}}' >> ${{env.ENV_SERVER}} && \
           echo 'application.security.jwt.refresh-token.expiration=${{secrets.JWT_REFRESH_EXP}}' >> ${{env.ENV_SERVER}}
 
-      # - name: Login to Docker Hub
-      #   run: docker compose down
+      - name: Remove and down docker image
+        run: |
+          cd server && \
+          docker compose down && \
+          docker rm -f duchungho/inf-sprint:latest
 
-      # - name: Login to Docker Hub
-      #   run: docker compose up -d
+      - name: Start Container
+        run: docker compose up -d
 
   deploy-client:
-    # needs: [build-api]
+    needs: [build-client-image]
     name: Deploy Preview Client
     runs-on: self-hosted
     steps:
@@ -146,3 +148,12 @@ jobs:
           echo 'REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${{secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID}}' >> ${{env.ENV_CLIENT}} && \
           echo 'REACT_APP_FIREBASE_APPID=${{secrets.REACT_APP_FIREBASE_APPID}}' >> ${{env.ENV_CLIENT}} && \
           echo 'REACT_APP_FIREBASE_MEASUREMENT_ID=${{secrets.REACT_APP_FIREBASE_MEASUREMENT_ID}}' >> ${{env.ENV_CLIENT}}
+
+      - name: Remove and down docker image
+        run: |
+          cd server && \
+          docker compose down && \
+          docker rm -f duchungho/client-inf:latest
+
+      - name: Start Container
+        run: docker compose up -d
