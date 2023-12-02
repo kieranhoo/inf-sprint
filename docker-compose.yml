@@ -19,38 +19,10 @@ services:
       - 3000:3000
     volumes:
       - ./client/.env:/app/.env
-
-  # # Database
-  # db:
-  #   image: mysql:latest
-  #   volumes:
-  #     - db_data:/var/lib/mysql
-  #   restart: always
-  #   ports:
-  #     - "3306:3306"
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: password
-  #     MYSQL_DATABASE: yourdb
-  #     MYSQL_PASSWORD: password
-  #   networks:
-  #     - bridge
-
-  # # phpmyadmin
-  # phpmyadmin:
-  #   depends_on:
-  #     - db
-  #   image: phpmyadmin
-  #   restart: always
-  #   ports:
-  #     - "8090:80"
-  #   environment:
-  #     PMA_HOST: db
-  #     MYSQL_ROOT_PASSWORD: password
-  #   networks:
-  #     - bridge
+    depends_on:
+      - server
 
 networks:
   bridge:
-    driver: bridge
 volumes:
   db_data:
