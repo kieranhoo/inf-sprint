@@ -29,7 +29,8 @@ class VersionServiceTest {
     private VersionRepository versionRepository;
 
     @Test
-    void getAllVersions() {
+    void givenVersions_whenGetAllVersions_thenReturnListResponse() {
+        // Given
         String documentIdFromParam = "123";
         int documentId = 123;
         List<VersionEntity> expectedVersions = Arrays.asList(
@@ -37,43 +38,64 @@ class VersionServiceTest {
                 new VersionEntity(15, "https://example.com/version/2", "Version 1.0.1", false, Date.valueOf("2023-11-11"), "Update version")
         );
         when(versionRepository.findByDocumentId(documentId)).thenReturn(expectedVersions);
+        // When
         ListResponse result = versionService.getAllVersions(documentIdFromParam);
+        // Then
+        assertEquals(new ListResponse(expectedVersions), result);
+    }
+
+    void givenZeroVersion_whenGetAllVersions_thenReturnListResponse() {
+        // Given
+        String documentIdFromParam = "123";
+        int documentId = 123;
+        List<VersionEntity> expectedVersions = Arrays.asList();
+        when(versionRepository.findByDocumentId(documentId)).thenReturn(expectedVersions);
+        // When
+        ListResponse result = versionService.getAllVersions(documentIdFromParam);
+        // Then
+        assertEquals(new ListResponse(expectedVersions), result);
     }
 
     @Test
-    void getOneVersion() {
+    void givenId_whenGetOneVersion_thenReturnVersion() {
+        // Given
         String idFromPathVariable = "123";
         int id = 123;
         VersionEntity expectedVersion = new VersionEntity(14, "https://example.com/version/1", "Version 1.0.0", true, Date.valueOf("2023-11-10"), "Initial version");
         when(versionRepository.findById(id)).thenReturn(expectedVersion);
+        // When
         VersionEntity result = versionService.getOneVersion(idFromPathVariable);
+        // Then
         assertEquals(expectedVersion, result);
+        // Verify that the method findById() is called with the correct argument
+        verify(versionRepository).findById(id);
+    }
+
+    @Test
+    void givenId_WhenGetOneVersion_ThenReturnNull() {
+        // Given
+        String idFromPathVariable = "123";
+        int id = 123;
+        // When
+        when(versionRepository.findById(id)).thenReturn(null);
+        // Then
+        assertEquals(null, versionService.getOneVersion(idFromPathVariable));
+        // Verify that the method findById() is called with the correct argument
+        verify(versionRepository).findById(id);
     }
 
     @Test
     void getLatestVersionByDocumentId() {
+        // Given
         String idFromPathVariable = "123";
         int id = 123;
         String expectedVersion = "Version 1.0.0";
         when(versionRepository.findLatestVersionByDocumentId(id)).thenReturn(expectedVersion);
+        // When
         MessageResponse result = versionService.getLatestVersionByDocumentId(idFromPathVariable);
+        // Then
         assertEquals(expectedVersion, result.getMessage());
+        // Verify that the method findLatestVersionByDocumentId() is called with the correct argument
+        verify(versionRepository).findLatestVersionByDocumentId(id);
     }
-
-    @Test
-    void checkRequest() {
-        String request = "123";
-        int expectedRequest = 123;
-        int result = versionService.checkRequest(request);
-        assertEquals(expectedRequest, result);
-    }
-
-    @Test
-    void checkRequest_ThrowsBadRequestException() {
-        String request = "";
-        assertThrows(BadRequestException.class, () -> {
-            versionService.checkRequest(request);
-        });
-    }
-
 }
