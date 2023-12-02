@@ -136,7 +136,7 @@ public class DepartmentControllerTest {
     }
 
     @Test
-    void givenZeroDepartments_whenFindDepartmentById_thenReturnNull() {
+    void givenZeroDepartments_whenFindDepartmentById_thenReturnNotFound() {
         // Given
         String departmentId = "1";
 
@@ -148,7 +148,7 @@ public class DepartmentControllerTest {
     }
 
     @Test
-    void givenEmptyDepartmentWithinRange_whenFindDepartmentById_thenReturnSuitableDepartment() {
+    void givenEmptyDepartmentWithinRange_whenFindDepartmentById_thenReturnOK() {
         // Given
         String departmentId = "1";
         DepartmentEntity department = new DepartmentEntity();
@@ -211,7 +211,7 @@ public class DepartmentControllerTest {
     }
 
     @Test
-    void givenNoDepartment_whenFindAllUsersByDepartmentId_thenReturnNull() {
+    void givenNoDepartment_whenFindAllUsersByDepartmentId_thenReturnNotFound() {
         // Given
         String departmentId = "1";
 
@@ -223,7 +223,7 @@ public class DepartmentControllerTest {
     }
 
     @Test
-    void givenUsersInDepartmentWithoutSearchingRange_whenFindAllUsersByDepartmentId_thenReturnNull() {
+    void givenUsersInDepartmentWithoutSearchingRange_whenFindAllUsersByDepartmentId_thenReturnNotFound() {
         // Given
         String departmentId = "1";
         String queryId = "15";
