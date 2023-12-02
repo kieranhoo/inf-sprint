@@ -9,6 +9,7 @@ env:
   IMAGE_NAME_SERVER: inf-sprint
   IMAGE_NAME_CLIENT: client-inf
   ENV_SERVER: ./server/src/main/resources/application.properties
+  ENV_CLIENT: ./client/.env
 
 jobs:
   test-api:
@@ -127,19 +128,21 @@ jobs:
       # - name: Login to Docker Hub
       #   run: docker compose up -d
 
-  # deploy-client:
-  #   # needs: [build-api]
-  #   name: Deploy Preview API
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Checkout source code
-  #       uses: actions/checkout@v4
+  deploy-client:
+    # needs: [build-api]
+    name: Deploy Preview Client
+    runs-on: self-hosted
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
 
-  #     - name: ENV file
-  #       run: echo ${{ secrets.DOCKERHUB_USERNAME }} > application.properties
-
-  #     - name: Login to Docker Hub
-  #       run: docker compose down
-
-  #     - name: Login to Docker Hub
-  #       run: docker compose up -d
+      - name: ENV file
+        run: |
+          echo 'REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_AUTH_DOMAIN=${{secrets.REACT_APP_FIREBASE_AUTH_DOMAIN}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_PROJECT_ID=${{secrets.REACT_APP_FIREBASE_PROJECT_ID}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_STORAGE_BUCKET=${{secrets.REACT_APP_FIREBASE_STORAGE_BUCKET}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${{secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_APPID=${{secrets.REACT_APP_FIREBASE_APPID}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_MEASUREMENT_ID=${{secrets.REACT_APP_FIREBASE_MEASUREMENT_ID}}' >> ${{env.ENV_CLIENT}}
