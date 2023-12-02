@@ -19,20 +19,32 @@ public class DepartmentController {
 
     @GetMapping("")
     public ResponseEntity<ListResponse> getAllDepartments() {
-        return ResponseEntity.ok(departmentService.getAllDepartments());
+        ListResponse response = departmentService.getAllDepartments();
+        if (response == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}/users")
-    public ResponseEntity<ListResponse> getAllUsers(
+    public ResponseEntity<?> getAllUsers(
             @PathVariable(name = "id") String id
     ) {
-        return ResponseEntity.ok(departmentService.getAllUsersByDepartmentId(id));
+        ListResponse response = departmentService.getAllUsersByDepartmentId(id);
+        if (response == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DepartmentEntity> getDepartmentById(
+    public ResponseEntity<?> getDepartmentById(
             @PathVariable(name = "id") String id
     ) {
-        return ResponseEntity.ok(departmentService.getDepartmentById(id));
+        DepartmentEntity response = departmentService.getDepartmentById(id);
+        if (response == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
 }

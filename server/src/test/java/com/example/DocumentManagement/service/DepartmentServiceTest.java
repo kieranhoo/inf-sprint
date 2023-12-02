@@ -80,8 +80,6 @@ class DepartmentServiceTest {
     @Test
     void givenZeroDepartments_whenFindAllDepartments_thenReturnZeroDepartments() {
         // Given
-        List<DepartmentEntity> departments = Collections.emptyList();
-        when(departmentRepository.findAllDepartments()).thenReturn(departments);
 
         // When
         ListResponse result = underTest.getAllDepartments();
