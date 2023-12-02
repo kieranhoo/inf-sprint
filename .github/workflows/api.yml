@@ -26,18 +26,15 @@ jobs:
 
       - name: mvn version
         run: mvn -X -version
-        
-      - name: Build with Maven
-        run: mvn -B clean install
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Build with Maven
+        run: mvn clean
+
+      - name: Compile with Maven
+        run: mvn compile
 
       - name: Test with Gradle
         run: mvn test
-
-      - name: Test with SonarQube
-        run: ./gradlew sonarqube
 
   build-server-image:
     needs: [test-api]
