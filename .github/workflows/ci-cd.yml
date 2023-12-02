@@ -105,20 +105,21 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: ENV file
-        run: rm ${{env.ENV_SERVER}} && \
+        run: |
+          rm ${{env.ENV_SERVER}} && \
           echo 'server.port=${{ secrets.SERVER_PORT }}' >> ${{env.ENV_SERVER}} && \
           echo 'spring.datasource.url=${{ secrets.DATA_SRC_URL }}' >> ${{env.ENV_SERVER}} && \
-          echo 'spring.datasource.username=${{env.DATA_SRC_USERNAME}}' >> ${{env.ENV_SERVER}} && \
-          echo 'spring.datasource.password=${{env.DATA_SRC_PASSWORD}}' >> ${{env.ENV_SERVER}} && \
-          echo 'spring.datasource.driver-class-name=${{env.DRIVER_CLASSNAME}}' >> ${{env.ENV_SERVER}} && \
-          echo 'spring.jpa.hibernate.ddl-auto=${{env.DDL_AUTO}}' >> ${{env.ENV_SERVER}} && \
-          echo 'spring.jpa.properties.hibernate.dialect=${{env.DIALECT}}' >> ${{env.ENV_SERVER}} && \
-          echo 'application.security.jwt.secret-key=${{env.JWT_SECRET_KEY}}' >> ${{env.ENV_SERVER}} && \
-          echo 'application.security.jwt.expiration=${{env.JWT_EXP}}' >> ${{env.ENV_SERVER}} && \
-          echo 'application.security.jwt.refresh-token.expiration=${{env.JWT_REFRESH_EXP}}' >> ${{env.ENV_SERVER}}
+          echo 'spring.datasource.username=${{secrets.DATA_SRC_USERNAME}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.password=${{secrets.DATA_SRC_PASSWORD}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.driver-class-name=${{secrets.DRIVER_CLASSNAME}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.jpa.hibernate.ddl-auto=${{secrets.DDL_AUTO}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.jpa.properties.hibernate.dialect=${{secrets.DIALECT}}' >> ${{env.ENV_SERVER}} && \
+          echo 'application.security.jwt.secret-key=${{secrets.JWT_SECRET_KEY}}' >> ${{env.ENV_SERVER}} && \
+          echo 'application.security.jwt.expiration=${{secrets.JWT_EXP}}' >> ${{env.ENV_SERVER}} && \
+          echo 'application.security.jwt.refresh-token.expiration=${{secrets.JWT_REFRESH_EXP}}' >> ${{env.ENV_SERVER}}
 
       # - name: Login to Docker Hub
       #   run: docker compose down
