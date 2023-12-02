@@ -124,11 +124,11 @@ jobs:
       - name: Remove and down docker image
         run: |
           cd server && \
-          docker compose down && \
-          docker rm -f duchungho/inf-sprint:latest
+          sudo docker compose down && \
+          sudo docker rm -f duchungho/inf-sprint:latest
 
       - name: Start Container
-        run: docker compose up -d
+        run: sudo docker compose up -d
 
   deploy-client:
     needs: [build-client-image]
@@ -152,8 +152,8 @@ jobs:
       - name: Remove and down docker image
         run: |
           cd server && \
-          docker compose down && \
-          docker rm -f duchungho/client-inf:latest
+          sudo docker compose down && \
+          sudo docker rm -f duchungho/client-inf:latest
 
       - name: Start Container
-        run: docker compose up -d
+        run: sudo docker compose up -d
