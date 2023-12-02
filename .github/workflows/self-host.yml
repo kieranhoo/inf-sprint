@@ -3,7 +3,7 @@ name: Deploy API & Client
 on:
   push:
     branches:
-      - master
+      - test-cd
 
 jobs:
   deploy-server:
@@ -13,6 +13,9 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
+
+      - name: ENV file
+        run: echo ${{ secrets.DOCKERHUB_USERNAME }} > application.properties
 
       - name: Login to Docker Hub
         run: docker compose down

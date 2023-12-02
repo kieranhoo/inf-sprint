@@ -1,0 +1,157 @@
+name: Deploy API & Client
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  IMAGE_NAME_SERVER: inf-sprint
+  IMAGE_NAME_CLIENT: client-inf
+  ENV_SERVER: ./server/src/main/resources/application.properties
+  ENV_CLIENT: ./client/.env
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Standard Checkout
+        uses: actions/checkout@v2
+
+      - name: Change directory to your project
+        run: ls -la && cd server
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: maven
+
+      - name: mvn version
+        run: mvn -X -version
+
+      - name: Build with Maven
+        run: cd server && ls -la && mvn clean install
+
+      - name: Compile with Maven
+        run: cd server && ls -la && mvn compile
+
+      - name: Test with Maven
+        run: cd server && ls -la && mvn test
+
+  build-server-image:
+    needs: [test-api]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Get commit ID
+        id: commit_id
+        run: echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:${{ steps.commit_id.outputs.COMMIT_ID }} .
+        working-directory: ./server
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:${{ steps.commit_id.outputs.COMMIT_ID }}
+
+      - name: Rename Docker image
+        run: docker tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:${{ steps.commit_id.outputs.COMMIT_ID }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:latest
+
+      - name: Push Image latest
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:latest
+
+      - name: Logout from Docker Hub
+        run: docker logout
+
+  build-client-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Get commit ID
+        id: commit_id
+        run: echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT }}:${{ steps.commit_id.outputs.COMMIT_ID }} .
+        working-directory: ./client
+
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT }}:${{ steps.commit_id.outputs.COMMIT_ID }}
+
+      - name: Rename Docker image
+        run: docker tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT }}:${{ steps.commit_id.outputs.COMMIT_ID }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT}}:latest
+
+      - name: Push Image latest
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT }}:latest
+
+      - name: Logout from Docker Hub
+        run: docker logout
+
+  # deploy-server:
+  #   needs: [test-api, build-server-image]
+  #   name: Deploy Preview API
+  #   runs-on: self-hosted
+  #   steps:
+  #     - name: Checkout source code
+  #       uses: actions/checkout@v2
+
+  #     - name: Remove and down docker image
+  #       run: |
+  #         sudo docker compose down && \
+  #         sudo docker rm -f duchungho/inf-sprint:latest
+
+  #     - name: ENV file
+  #       run: |
+  #         rm ${{env.ENV_SERVER}} && \
+  #         echo 'server.port=${{ secrets.SERVER_PORT }}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'spring.datasource.url=${{ secrets.DATA_SRC_URL }}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'spring.datasource.username=${{secrets.DATA_SRC_USERNAME}}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'spring.datasource.password=${{secrets.DATA_SRC_PASSWORD}}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'spring.datasource.driver-class-name=${{secrets.DRIVER_CLASSNAME}}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'spring.jpa.hibernate.ddl-auto=${{secrets.DDL_AUTO}}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'spring.jpa.properties.hibernate.dialect=${{secrets.DIALECT}}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'application.security.jwt.secret-key=${{secrets.JWT_SECRET_KEY}}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'application.security.jwt.expiration=${{secrets.JWT_EXP}}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'application.security.jwt.refresh-token.expiration=${{secrets.JWT_REFRESH_EXP}}' >> ${{env.ENV_SERVER}}
+
+  #     - name: Start Container
+  #       run: sudo docker compose up -d
+
+  # deploy-client:
+  #   needs: [build-client-image]
+  #   name: Deploy Preview Client
+  #   runs-on: self-hosted
+  #   steps:
+  #     - name: Checkout source code
+  #       uses: actions/checkout@v2
+
+  #     - name: Remove and down docker image
+  #       run: |
+  #         sudo docker compose down && \
+  #         sudo docker rm -f duchungho/client-inf:latest
+
+  #     - name: ENV file
+  #       run: |
+  #         echo 'REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}' >> ${{env.ENV_CLIENT}} && \
+  #         echo 'REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }}' >> ${{env.ENV_CLIENT}} && \
+  #         echo 'REACT_APP_FIREBASE_AUTH_DOMAIN=${{secrets.REACT_APP_FIREBASE_AUTH_DOMAIN}}' >> ${{env.ENV_CLIENT}} && \
+  #         echo 'REACT_APP_FIREBASE_PROJECT_ID=${{secrets.REACT_APP_FIREBASE_PROJECT_ID}}' >> ${{env.ENV_CLIENT}} && \
+  #         echo 'REACT_APP_FIREBASE_STORAGE_BUCKET=${{secrets.REACT_APP_FIREBASE_STORAGE_BUCKET}}' >> ${{env.ENV_CLIENT}} && \
+  #         echo 'REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${{secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID}}' >> ${{env.ENV_CLIENT}} && \
+  #         echo 'REACT_APP_FIREBASE_APPID=${{secrets.REACT_APP_FIREBASE_APPID}}' >> ${{env.ENV_CLIENT}} && \
+  #         echo 'REACT_APP_FIREBASE_MEASUREMENT_ID=${{secrets.REACT_APP_FIREBASE_MEASUREMENT_ID}}' >> ${{env.ENV_CLIENT}}
+
+  #     - name: Start Container
+  #       run: sudo docker compose up -d
