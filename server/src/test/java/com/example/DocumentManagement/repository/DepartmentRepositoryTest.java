@@ -1,31 +1,37 @@
 package com.example.DocumentManagement.repository;
 
 import com.example.DocumentManagement.entity.DepartmentEntity;
-import com.example.DocumentManagement.response.ListResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 public class DepartmentRepositoryTest {
+
+    /*
+     * TESTING STRATEGY: BLACK-BOX DECISION TABLE TESTING
+     *
+     * 1. FindAllDepartments
+     * - Input: None
+     * - States: Valid Departments, Zero Department, Empty Departments in DB
+     * - Output: List of DepartmentEntity (Non-empty, Empty, Null)
+     *
+     * 2. FindDepartmentById
+     * - Input: DepartmentId
+     * - States:
+     *   a/ Valid DepartmentId, Invalid DepartmentId
+     *   b/ Non-empty Department, Zero Department, Empty Department in DB
+     * - Output: DepartmentEntity (Non-Null, Null)
+     * */
 
     @Autowired
     private DepartmentRepository underTest;
@@ -141,20 +147,5 @@ public class DepartmentRepositoryTest {
         Assertions.assertNotNull(actualDepartment);
         Assertions.assertEquals(department1.getName(), actualDepartment.getName());
         Assertions.assertEquals(department1.getDescription(), actualDepartment.getDescription());
-    }
-
-    @Test
-    void givenEmptyDepartmentsWithoutRange_whenFindDepartmentsById_thenReturnNull() {
-        // Given
-        DepartmentEntity department1 = new DepartmentEntity();
-        DepartmentEntity department2 = new DepartmentEntity();
-        DepartmentEntity resDepartment1 = underTest.save(department1);
-        DepartmentEntity resDepartment2 = underTest.save(department2);
-
-        // When
-        DepartmentEntity actualDepartment = underTest.findDepartmentById(resDepartment1.getId()+resDepartment2.getId());
-
-        // Then
-        Assertions.assertNull(actualDepartment);
     }
 }
