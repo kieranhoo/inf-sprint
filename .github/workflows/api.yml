@@ -24,6 +24,9 @@ jobs:
       - name: Change directory to your project
         run: cd server
 
+      - name: mvn version
+        run: mvn -X -version
+        
       - name: Build with Maven
         run: mvn -B clean install
 
