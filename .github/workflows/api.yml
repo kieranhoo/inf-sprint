@@ -33,10 +33,10 @@ jobs:
         run: cd server && ls -la && mvn clean install
 
       - name: Compile with Maven
-        run: mvn compile
+        run: cd server && ls -la && mvn compile
 
-      - name: Test with Gradle
-        run: mvn test
+      - name: Test with Maven
+        run: cd server && ls -la && mvn test
 
   build-server-image:
     needs: [test-api]
