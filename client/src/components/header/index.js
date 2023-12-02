@@ -40,7 +40,7 @@ export default function Header() {
         <div className="fixed top-0 w-full bg-white shadow-md z-[50]">
             <div className="container flex flex-row h-[100px] py-[15px] items-center">
                 <div className="w-1/4 text-xl font-bold text-blue-400">
-                    Documentations Mangement
+                    Documentations Management
                 </div>
                 <div className="flex flex-row justify-between w-3/4 gap-4">
                     <div className="w-1/6"></div>

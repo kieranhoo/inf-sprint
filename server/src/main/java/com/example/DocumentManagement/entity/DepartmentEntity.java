@@ -20,4 +20,5 @@ public class DepartmentEntity extends BaseEntity {
 
     @Column(name = "description")
     private String description;
+
 }
