@@ -22,4 +22,5 @@ public class DocumentResponse {
     private Date createTime;
     private DepartmentEntity department;
     private List<VersionEntity> versions;
+
 }

@@ -22,7 +22,7 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Intege
     void updateDocument(String nameDocument, String description, Date createTime, int id);
 
     @Query(value = "SELECT * FROM document where is_deleted = false", nativeQuery = true)
-    Page<DocumentEntity> findAllPageByIsDeletedFalse(Pageable pageable);
+    List<DocumentEntity> findAllDocuments();
 
     @Modifying
     @Transactional

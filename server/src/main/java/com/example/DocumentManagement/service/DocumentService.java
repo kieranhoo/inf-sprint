@@ -120,28 +120,9 @@ public class DocumentService extends SupportFunction {
         return new MessageResponse("Update Document SuccessFully!");
     }
 
-    public PageResponse getAllDocuments(String pageFromParam, String sizeFromParam) {
-        int page = checkPage(pageFromParam);
-        int size = checkSize(sizeFromParam);
-
-        if (size >= 100) size = 100;
-        if (page < 0) page = 1;
-        if (size < 0) size = 10;
-
-        Pageable pageable = PageRequest.of(page - 1, size);
-        Page<DocumentEntity> pageDocument = documentRepository.findAllPageByIsDeletedFalse(pageable);
-
-        List<GetAllDocumentResponse> response = new ArrayList<>();
-        for (DocumentEntity loop : pageDocument.getContent()) {
-            response.add(new GetAllDocumentResponse(
-                    loop.getId(),
-                    loop.getName(),
-                    loop.getDescription(),
-                    loop.getCreateTime()
-            ));
-        }
-
-        return new PageResponse(pageDocument.getTotalElements(), pageDocument.getTotalPages(), response);
+    public ListResponse getAllDocuments() {
+        List<DocumentEntity> documents = documentRepository.findAllDocuments();
+        return getListResponse(documents);
     }
     public MessageResponse deleteDocumentById(String idFromPathVariable){
         int id = checkRequest(idFromPathVariable);

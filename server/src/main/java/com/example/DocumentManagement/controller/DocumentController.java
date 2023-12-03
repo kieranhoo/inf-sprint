@@ -3,10 +3,7 @@ package com.example.DocumentManagement.controller;
 import com.example.DocumentManagement.request.CreateDocumentRequest;
 import com.example.DocumentManagement.request.SearchDocumentRequest;
 import com.example.DocumentManagement.request.UpdateDocumentRequest;
-import com.example.DocumentManagement.response.DocumentResponse;
-import com.example.DocumentManagement.response.ListResponse;
-import com.example.DocumentManagement.response.MessageResponse;
-import com.example.DocumentManagement.response.PageResponse;
+import com.example.DocumentManagement.response.*;
 import com.example.DocumentManagement.service.DocumentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +30,9 @@ public class DocumentController {
     }
 
     @GetMapping("")
-    public ResponseEntity<PageResponse> getAllDocuments(
-            @RequestParam(name = "page") String page,
-            @RequestParam(name = "size") String size
+    public ResponseEntity<ListResponse> getAllDocuments(
     ) {
-        return ResponseEntity.ok(documentService.getAllDocuments(page, size));
+        return ResponseEntity.ok(documentService.getAllDocuments());
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDocumentById(@PathVariable(name = "id") String id){

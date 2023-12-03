@@ -34,4 +34,5 @@ public class DocumentEntity extends BaseEntity{
 
     @Column(name = "department_id")
     private String departmentId;
+
 }
