@@ -1,7 +1,9 @@
 package com.example.DocumentManagement.controller;
 
 import com.example.DocumentManagement.entity.DepartmentEntity;
+import com.example.DocumentManagement.entity.DocumentEntity;
 import com.example.DocumentManagement.entity.VersionEntity;
+import com.example.DocumentManagement.request.CreateDocumentRequest;
 import com.example.DocumentManagement.response.*;
 import com.example.DocumentManagement.service.DocumentService;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +20,7 @@ import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class DocumentControllerTest {
@@ -53,7 +56,7 @@ public class DocumentControllerTest {
 
 
     @InjectMocks
-    DocumentController documentController;
+    DocumentController underTest;
     @Mock
     DocumentService documentService;
     @Test
@@ -93,7 +96,7 @@ public class DocumentControllerTest {
 
         when(documentService.getDocumentById(idString)).thenReturn(documentResponse);
         // When
-        ResponseEntity<DocumentResponse> result = documentController.getDocumentById(idString);
+        ResponseEntity<DocumentResponse> result = underTest.getDocumentById(idString);
         // Then
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
         Assertions.assertEquals(documentResponse, result.getBody());
@@ -137,10 +140,76 @@ public class DocumentControllerTest {
         ListResponse expectedResponse = new ListResponse(Arrays.asList(documentResponse));
         when(documentService.getAllDocuments()).thenReturn(expectedResponse);
         // When
-        ResponseEntity<ListResponse> result = documentController.getAllDocuments();
+        ResponseEntity<ListResponse> result = underTest.getAllDocuments();
         // Then
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
         Assertions.assertEquals(expectedResponse, result.getBody());
         verify(documentService).getAllDocuments();
+    }
+
+    @Test
+    void givenNewDocumentData_whenCreateDocuments_thenReturnOK() {
+        // Given
+        CreateDocumentRequest newDocumentData = new CreateDocumentRequest("doc 1", "description for doc 1", "http://example.com/document/1", "Version 1.0.0", "note for doc 1", "1");
+        MessageResponse expectedResponse = new MessageResponse("Create SuccessFully!");
+        when(documentService.createDocument(newDocumentData)).thenReturn(expectedResponse);
+
+        // When
+        ResponseEntity<MessageResponse> responseEntity = underTest.createDocument(newDocumentData);
+
+        // Then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedResponse, responseEntity.getBody());
+        verify(documentService).createDocument(newDocumentData);
+    }
+
+    @Test
+    void givenDocumentsInDepartment_whenFindAllDocumentsByDepartmentId_thenReturnOK() {
+        // Given
+        String departmentId = "1";
+        DocumentEntity document1 = new DocumentEntity("doc 1", "description for doc 1", Date.valueOf("2023-11-10"), false, null, "1");
+        DocumentEntity document2 = new DocumentEntity("doc 2", "description for doc 2", Date.valueOf("2023-11-11"), false, null, "1");
+        ListResponse expectedResponse = new ListResponse(Arrays.asList(document1, document2));
+        when(documentService.getDocumentsByDepartmentId(departmentId)).thenReturn(expectedResponse);
+
+        // When
+        ResponseEntity<ListResponse> responseEntity = underTest.getDocumentsByDepartmentId(departmentId);
+
+        // Then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedResponse, responseEntity.getBody());
+        verify(documentService).getDocumentsByDepartmentId(departmentId);
+    }
+
+    @Test
+    void givenNoDocumentsInDepartment_whenFindAllDocumentsByDepartmentId_thenReturnOK() {
+        // Given
+        String departmentId = "1";
+        ListResponse expectedResponse = new ListResponse(List.of());
+        when(documentService.getDocumentsByDepartmentId(departmentId)).thenReturn(expectedResponse);
+
+        // When
+        ResponseEntity<ListResponse> responseEntity = underTest.getDocumentsByDepartmentId(departmentId);
+
+        // Then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedResponse, responseEntity.getBody());
+        verify(documentService).getDocumentsByDepartmentId(departmentId);
+    }
+
+    @Test
+    void givenNoDepartment_whenFindAllDocumentsByDepartmentId_thenReturnOK() {
+        // Given
+        String departmentId = "1";
+        ListResponse expectedResponse = new ListResponse(null);
+        when(documentService.getDocumentsByDepartmentId(departmentId)).thenReturn(expectedResponse);
+
+        // When
+        ResponseEntity<?> responseEntity = underTest.getDocumentsByDepartmentId(departmentId);
+
+        // Then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedResponse, responseEntity.getBody());
+        verify(documentService).getDocumentsByDepartmentId(departmentId);
     }
 }
