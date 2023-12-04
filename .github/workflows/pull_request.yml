@@ -1,0 +1,36 @@
+name: Spring Boot Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+env:
+  IMAGE_NAME_SERVER: inf-sprint
+  IMAGE_NAME_CLIENT: client-inf
+  ENV_SERVER: ./server/src/main/resources/application.properties
+  ENV_CLIENT: ./client/.env
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Standard Checkout
+        uses: actions/checkout@v2
+
+      - name: Change directory to your project
+        run: ls -la && cd server
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "temurin"
+          cache: maven
+
+      - name: mvn version
+        run: mvn -X -version
+
+      - name: Test with Maven
+        run: cd server && ls -la && mvn test

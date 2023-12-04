@@ -4,6 +4,7 @@ import com.example.DocumentManagement.entity.DepartmentEntity;
 import com.example.DocumentManagement.entity.DocumentEntity;
 import com.example.DocumentManagement.entity.VersionEntity;
 import com.example.DocumentManagement.request.CreateDocumentRequest;
+import com.example.DocumentManagement.exception.NotFoundException;
 import com.example.DocumentManagement.response.*;
 import com.example.DocumentManagement.service.DocumentService;
 import org.junit.jupiter.api.Assertions;
@@ -18,49 +19,19 @@ import org.springframework.http.ResponseEntity;
 import javax.swing.text.Document;
 import java.sql.Date;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class DocumentControllerTest {
-
-    /*
-     * TESTING STRATEGY: BLACK-BOX DECISION TABLE TESTING
-     *
-     * 1. GetAllDocuments
-     * - Input: PageIndex, PageSize
-     * - Constrain:
-     *   + Valid PageSize: 0 < PageSize < 100 (PageSize<0 -> PageSize=10; PageSize>=100 -> PageSize=100)
-     *   + Valid PageIndex: 0 < PageIndex < TotalPage in DB (PageIndex<0 -> PageIndex=1)
-     * - States:
-     *   a/ Valid PageIndex - Valid PageSize, Valid PageIndex - Invalid PageSize,
-     *   Invalid PageIndex - Valid PageSize, Invalid PageIndex - Invalid PageSize
-     *   b/ Non-empty PageResponse, PageResponse with Empty DocumentResponse in DB
-     * - Output: Response PageResponse (Non-empty, Empty)
-     *
-     * 2. GetDepartmentById
-     * - Input: DepartmentId
-     * - States:
-     *   a/ Valid DepartmentId, Invalid DepartmentId
-     *   b/ Non-empty Department, Zero Department, Empty Department in DB
-     * - Output: Response DepartmentEntity (Non-Null, Null)
-     *
-     * 3. GetAllUsersFromDepartmentId
-     * - Input: DepartmentId
-     * - States:
-     *   a/ Valid DepartmentId, Invalid DepartmentId
-     *   b/ Users in Department, No Users in Department, Zero Department in DB
-     * - Output: Response List of UsersEntity (Non-empty, Empty, Null)
-     * */
-
-
     @InjectMocks
     DocumentController underTest;
     @Mock
     DocumentService documentService;
     @Test
-    void getDocumentById () {
+    void givenTrueId_whenGetDocumentById_thenReturnDocumentResponse () {
         // Given
         String idString = "123";
         int id = 123;
@@ -72,7 +43,7 @@ public class DocumentControllerTest {
         version1.setDocumentId(id);
         version1.setUrl("http://example.com/document/1");
         version1.setName("Version 1");
-        version1.setCurrentVersion(true);
+        version1.setCurrentVersion(false);
         version1.setUpdateTime(Date.valueOf("2023-11-09"));
         version1.setNote("Initial version");
 
@@ -80,7 +51,7 @@ public class DocumentControllerTest {
         version2.setDocumentId(id);
         version2.setUrl("http://example.com/document/1");
         version2.setName("Version 2");
-        version2.setCurrentVersion(false);
+        version2.setCurrentVersion(true);
         version2.setUpdateTime(Date.valueOf("2023-11-10"));
         version2.setNote("Updated version");
 
@@ -102,9 +73,21 @@ public class DocumentControllerTest {
         Assertions.assertEquals(documentResponse, result.getBody());
         verify(documentService).getDocumentById(idString);
     }
+    @Test
+    void givenWrongId_whenGetDocumentById_thenReturnException () {
+        // Given
+        when(documentService.getDocumentById("2")).thenThrow(new NotFoundException("Document not found!"));
+        // When
+        NotFoundException exception = Assertions.assertThrows(NotFoundException.class, () -> {
+            documentService.getDocumentById("2");
+        });
+        // Then
+        Assertions.assertEquals("Document not found!", exception.getMessage());
+        verify(documentService).getDocumentById("2");
+    }
 
     @Test
-    void getAllDocuments () {
+    void givenDocument_whenGetAllDocuments_thenReturnListDocumentsResponse () {
         // Given
         int id = 123;
         DepartmentEntity department = new DepartmentEntity();
@@ -115,7 +98,7 @@ public class DocumentControllerTest {
         version1.setDocumentId(id);
         version1.setUrl("http://example.com/document/1");
         version1.setName("Version 1");
-        version1.setCurrentVersion(true);
+        version1.setCurrentVersion(false);
         version1.setUpdateTime(Date.valueOf("2023-11-09"));
         version1.setNote("Initial version");
 
@@ -123,7 +106,7 @@ public class DocumentControllerTest {
         version2.setDocumentId(id);
         version2.setUrl("http://example.com/document/1");
         version2.setName("Version 2");
-        version2.setCurrentVersion(false);
+        version2.setCurrentVersion(true);
         version2.setUpdateTime(Date.valueOf("2023-11-10"));
         version2.setNote("Updated version");
 
