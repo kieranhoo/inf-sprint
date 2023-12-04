@@ -1,4 +1,4 @@
-name: Deploy API & Client
+name: Spring Boot Test
 
 on:
   push:
@@ -31,65 +31,6 @@ jobs:
 
       - name: mvn version
         run: mvn -X -version
-        
+
       - name: Test with Maven
         run: cd server && ls -la && mvn test
-
-  build-server-image:
-    needs: [test-api]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Get commit ID
-        id: commit_id
-        run: echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:${{ steps.commit_id.outputs.COMMIT_ID }} .
-        working-directory: ./server
-
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:${{ steps.commit_id.outputs.COMMIT_ID }}
-
-      - name: Rename Docker image
-        run: docker tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:${{ steps.commit_id.outputs.COMMIT_ID }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:latest
-
-      - name: Push Image latest
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_SERVER }}:latest
-
-      - name: Logout from Docker Hub
-        run: docker logout
-
-  build-client-image:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Login to Docker Hub
-        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Get commit ID
-        id: commit_id
-        run: echo "COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-
-      - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT }}:${{ steps.commit_id.outputs.COMMIT_ID }} .
-        working-directory: ./client
-
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT }}:${{ steps.commit_id.outputs.COMMIT_ID }}
-
-      - name: Rename Docker image
-        run: docker tag ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT }}:${{ steps.commit_id.outputs.COMMIT_ID }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT}}:latest
-
-      - name: Push Image latest
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT }}:latest
-
-      - name: Logout from Docker Hub
-        run: docker logout
