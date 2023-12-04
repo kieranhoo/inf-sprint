@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class DocumentControllerTest {
     @InjectMocks
-    DocumentController underTest;
+    DocumentController documentController;
     @Mock
     DocumentService documentService;
     @Test
@@ -67,7 +67,7 @@ public class DocumentControllerTest {
 
         when(documentService.getDocumentById(idString)).thenReturn(documentResponse);
         // When
-        ResponseEntity<DocumentResponse> result = underTest.getDocumentById(idString);
+        ResponseEntity<DocumentResponse> result = documentController.getDocumentById(idString);
         // Then
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
         Assertions.assertEquals(documentResponse, result.getBody());
@@ -123,7 +123,7 @@ public class DocumentControllerTest {
         ListResponse expectedResponse = new ListResponse(Arrays.asList(documentResponse));
         when(documentService.getAllDocuments()).thenReturn(expectedResponse);
         // When
-        ResponseEntity<ListResponse> result = underTest.getAllDocuments();
+        ResponseEntity<ListResponse> result = documentController.getAllDocuments();
         // Then
         Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
         Assertions.assertEquals(expectedResponse, result.getBody());
@@ -138,7 +138,7 @@ public class DocumentControllerTest {
         when(documentService.createDocument(newDocumentData)).thenReturn(expectedResponse);
 
         // When
-        ResponseEntity<MessageResponse> responseEntity = underTest.createDocument(newDocumentData);
+        ResponseEntity<MessageResponse> responseEntity = documentController.createDocument(newDocumentData);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -156,7 +156,7 @@ public class DocumentControllerTest {
         when(documentService.getDocumentsByDepartmentId(departmentId)).thenReturn(expectedResponse);
 
         // When
-        ResponseEntity<ListResponse> responseEntity = underTest.getDocumentsByDepartmentId(departmentId);
+        ResponseEntity<ListResponse> responseEntity = documentController.getDocumentsByDepartmentId(departmentId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -172,7 +172,7 @@ public class DocumentControllerTest {
         when(documentService.getDocumentsByDepartmentId(departmentId)).thenReturn(expectedResponse);
 
         // When
-        ResponseEntity<ListResponse> responseEntity = underTest.getDocumentsByDepartmentId(departmentId);
+        ResponseEntity<ListResponse> responseEntity = documentController.getDocumentsByDepartmentId(departmentId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
@@ -188,7 +188,7 @@ public class DocumentControllerTest {
         when(documentService.getDocumentsByDepartmentId(departmentId)).thenReturn(expectedResponse);
 
         // When
-        ResponseEntity<?> responseEntity = underTest.getDocumentsByDepartmentId(departmentId);
+        ResponseEntity<?> responseEntity = documentController.getDocumentsByDepartmentId(departmentId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
