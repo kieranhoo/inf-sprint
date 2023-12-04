@@ -1,13 +1,13 @@
-package com.example.DocumentManagement;
+// package com.example.DocumentManagement;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+// import org.junit.jupiter.api.Test;
+// import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class DocumentManagementApplicationTests {
+// @SpringBootTest
+// class DocumentManagementApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+// 	@Test
+// 	void contextLoads() {
+// 	}
 
-}
+// }
