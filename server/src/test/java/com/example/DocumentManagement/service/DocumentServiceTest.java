@@ -16,7 +16,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.print.Doc;
 import java.sql.Date;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,11 +39,11 @@ public class DocumentServiceTest {
         DepartmentEntity departmentEntity = new DepartmentEntity("Management", "Management Room");
         DocumentEntity document1 = new DocumentEntity("Document1", "Document1 Description", Date.valueOf("2023-11-10"), false, null, "1");
         document1.setId(1);
-        VersionEntity version1doc1 = new VersionEntity(1, "https://example.com/version/1", "Version 1.0.0", true, Date.valueOf("2023-11-10"), "Original");
+        VersionEntity version1doc1 = new VersionEntity(1, "https://example.com/version/1", "Version 1.0.0", false, Date.valueOf("2023-11-10"), "Original");
         VersionEntity version2doc1 = new VersionEntity(1, "https://example.com/version/1", "Version 1.0.1", true, Date.valueOf("2023-11-10"), "Update");
         DocumentEntity document2 = new DocumentEntity("Document2", "Document2 Description", Date.valueOf("2023-11-10"), false, null, "1");
         document2.setId(2);
-        VersionEntity version1doc2 = new VersionEntity(2, "https://example.com/version/2", "Version 2.0.0", true, Date.valueOf("2023-11-10"), "Original");
+        VersionEntity version1doc2 = new VersionEntity(2, "https://example.com/version/2", "Version 2.0.0", false, Date.valueOf("2023-11-10"), "Original");
         VersionEntity version2doc2 = new VersionEntity(2, "https://example.com/version/2", "Version 2.0.1", true, Date.valueOf("2023-11-10"), "Update");
         List<DocumentEntity> documents = Arrays.asList(document1, document2);
         List<VersionEntity> listVersion1 = Arrays.asList(version1doc1, version1doc2);
@@ -90,8 +89,8 @@ public class DocumentServiceTest {
         // Given
         DocumentEntity expectedDocument = new DocumentEntity("Document1", "Document1 Description", Date.valueOf("2023-11-10"), false, null, "1");
         expectedDocument.setId(1);
-        VersionEntity version1 = new VersionEntity(expectedDocument.getId(), "https://example.com/version/1", "Version 1.0.0", true, Date.valueOf("2023-11-10"), "Initial version");
-        VersionEntity version2 = new VersionEntity(expectedDocument.getId(), "https://example.com/version/2", "Version 1.0.1", false, Date.valueOf("2023-11-11"), "Update version");
+        VersionEntity version1 = new VersionEntity(expectedDocument.getId(), "https://example.com/version/1", "Version 1.0.0", false, Date.valueOf("2023-11-10"), "Initial version");
+        VersionEntity version2 = new VersionEntity(expectedDocument.getId(), "https://example.com/version/2", "Version 1.0.1", true, Date.valueOf("2023-11-11"), "Update version");
         List<VersionEntity> listVersions = Arrays.asList(version1, version2);
         DepartmentEntity departmentEntity = new DepartmentEntity("Management", "Management Room");
         when(documentRepository.findDocumentById(expectedDocument.getId())).thenReturn(expectedDocument);
@@ -117,7 +116,7 @@ public class DocumentServiceTest {
     }
 
     @Test
-    void givenWrongId_whenFindDocumentById_thenReturnNull() {
+    void givenWrongId_whenFindDocumentById_thenReturnException() {
         // Given
         when(documentRepository.findDocumentById(2)).thenReturn(null);
 
