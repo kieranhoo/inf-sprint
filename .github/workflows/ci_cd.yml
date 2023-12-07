@@ -115,7 +115,7 @@ jobs:
   #     - name: ENV file
   #       run: |
   #         rm ${{env.ENV_SERVER}} && \
-  #         echo 'server.port=${{ secrets.SERVER_PORT }}' >> ${{env.ENV_SERVER}} && \
+  #         echo 'server.port=${{ secrets.SERVER_PORT }}' > ${{env.ENV_SERVER}} && \
   #         echo 'spring.datasource.url=${{ secrets.DATA_SRC_URL }}' >> ${{env.ENV_SERVER}} && \
   #         echo 'spring.datasource.username=${{secrets.DATA_SRC_USERNAME}}' >> ${{env.ENV_SERVER}} && \
   #         echo 'spring.datasource.password=${{secrets.DATA_SRC_PASSWORD}}' >> ${{env.ENV_SERVER}} && \
@@ -144,7 +144,7 @@ jobs:
 
   #     - name: ENV file
   #       run: |
-  #         echo 'REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}' >> ${{env.ENV_CLIENT}} && \
+  #         echo 'REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}' > ${{env.ENV_CLIENT}} && \
   #         echo 'REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }}' >> ${{env.ENV_CLIENT}} && \
   #         echo 'REACT_APP_FIREBASE_AUTH_DOMAIN=${{secrets.REACT_APP_FIREBASE_AUTH_DOMAIN}}' >> ${{env.ENV_CLIENT}} && \
   #         echo 'REACT_APP_FIREBASE_PROJECT_ID=${{secrets.REACT_APP_FIREBASE_PROJECT_ID}}' >> ${{env.ENV_CLIENT}} && \
