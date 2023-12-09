@@ -8,6 +8,7 @@ import com.example.DocumentManagement.repository.DepartmentRepository;
 import com.example.DocumentManagement.repository.DocumentRepository;
 import com.example.DocumentManagement.repository.VersionRepository;
 import com.example.DocumentManagement.request.CreateDocumentRequest;
+import com.example.DocumentManagement.request.UpdateDocumentRequest;
 import com.example.DocumentManagement.response.DocumentResponse;
 import com.example.DocumentManagement.response.ListResponse;
 import com.example.DocumentManagement.response.MessageResponse;
@@ -245,4 +246,84 @@ public class DocumentServiceTest {
         // Verify repository calls
         verify(documentRepository).findDocumentsByDepartmentId(Integer.parseInt(departmentId));
     }
+    @Test
+    void givenKeywordAndDepartmentId_whenSearchDocuments_thenReturnMatchingDocuments() {
+        // Given
+        int departmentId = 1;
+        String keyword = "example";
+        DocumentEntity document1 = new DocumentEntity("Document1", "Description1", null, false, null, "1");
+        DocumentEntity document2 = new DocumentEntity("Document2", "Description2", null, false, null, "1");
+        List<DocumentEntity> expectedDocuments = Arrays.asList(document1, document2);
+        // Mock the behavior of the repository method
+        when(documentRepository.searchDocuments(departmentId,keyword)).thenReturn(expectedDocuments);
+        // When
+        List<DocumentEntity> actualDocuments = documentRepository.searchDocuments(departmentId, keyword);
+        // Then
+        Assertions.assertEquals(expectedDocuments.size(), actualDocuments.size());
+        Assertions.assertEquals(expectedDocuments, actualDocuments);
+        verify(documentRepository).searchDocuments(departmentId,keyword);
+    }
+    @Test
+    void givenNoMatchingKeyword_whenSearchDocuments_thenReturnEmptyList() {
+        // Given
+        int departmentId = 1;
+        String keyword = "nonexistent";
+        List<DocumentEntity> emptyList = Collections.emptyList();
+
+        // Mock the repository behavior when no documents match the given keyword
+        when(documentRepository.searchDocuments(departmentId, keyword)).thenReturn(emptyList);
+
+        // When
+        List<DocumentEntity> actualDocuments = documentRepository.searchDocuments(departmentId, keyword);
+
+        // Then
+        Assertions.assertEquals(0, actualDocuments.size());
+        Assertions.assertEquals(emptyList, actualDocuments);
+        verify(documentRepository).searchDocuments(departmentId, keyword);
+    }
+    @Test
+    void givenValidDocumentId_whenUpdateDocument_thenUpdateSuccessfully() {
+        // Given
+        int documentId = 1;
+        UpdateDocumentRequest updateRequest = new UpdateDocumentRequest();
+        updateRequest.setNameDocument("Updated Document");
+        updateRequest.setDescription("Updated Description");
+        updateRequest.setUrl("https://updated-url.com");
+        updateRequest.setNameVersion("Version 2.0");
+        updateRequest.setNote("Updated Note");
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Date createTime = new Date(Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant()).getTime());
+
+        DocumentEntity existingDocument = new DocumentEntity("Existing Document", "Existing Description", createTime, false, null, "1");
+
+        when(documentRepository.findDocumentById(documentId)).thenReturn(existingDocument);
+        when(versionRepository.findByDocumentIdAndCurrentVersionTrue(documentId)).thenReturn(Collections.emptyList());
+
+        // When
+        MessageResponse response = documentService.updateDocument(updateRequest, String.valueOf(documentId));
+
+        // Then
+        Assertions.assertEquals("Update Document SuccessFully!", response.getMessage());
+
+
+    }
+    @Test
+    void givenInvalidDocumentId_whenUpdateDocument_thenThrowNotFoundException() {
+        // Given
+        int documentId = 2;
+        UpdateDocumentRequest updateRequest = new UpdateDocumentRequest();
+
+        when(documentRepository.findDocumentById(documentId)).thenReturn(null);
+
+        // When & Then
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> documentService.updateDocument(updateRequest, String.valueOf(documentId)));
+
+        Assertions.assertEquals("Document not found!", exception.getMessage());
+
+        verify(documentRepository).findDocumentById(documentId);
+        verifyNoInteractions(versionRepository);
+    }
+
 }
