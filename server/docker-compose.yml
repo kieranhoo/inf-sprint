@@ -9,7 +9,6 @@ services:
       - 8081:8081
     volumes:
       - ./src/main/resources/application.properties:/app/src/main/resources/application.properties
-
 networks:
   bridge:
 volumes:

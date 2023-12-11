@@ -99,59 +99,65 @@ jobs:
       - name: Logout from Docker Hub
         run: docker logout
 
-  # deploy-server:
-  #   needs: [test-api, build-server-image]
-  #   name: Deploy Preview API
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Checkout source code
-  #       uses: actions/checkout@v2
+  deploy-server:
+    needs: [test-api, build-server-image]
+    name: Deploy Preview API
+    runs-on: [self-hosted, server]
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
 
-  #     - name: Remove and down docker image
-  #       run: |
-  #         sudo docker compose down && \
-  #         sudo docker rmi -f duchungho/inf-sprint:latest
+      - name: Remove and down docker image
+        run: |
+          cd server && \
+          sudo docker compose down && \
+          sudo docker rm -f duchungho/inf-sprint:latest
 
-  #     - name: ENV file
-  #       run: |
-  #         rm ${{env.ENV_SERVER}} && \
-  #         echo 'server.port=${{ secrets.SERVER_PORT }}' > ${{env.ENV_SERVER}} && \
-  #         echo 'spring.datasource.url=${{ secrets.DATA_SRC_URL }}' >> ${{env.ENV_SERVER}} && \
-  #         echo 'spring.datasource.username=${{secrets.DATA_SRC_USERNAME}}' >> ${{env.ENV_SERVER}} && \
-  #         echo 'spring.datasource.password=${{secrets.DATA_SRC_PASSWORD}}' >> ${{env.ENV_SERVER}} && \
-  #         echo 'spring.datasource.driver-class-name=${{secrets.DRIVER_CLASSNAME}}' >> ${{env.ENV_SERVER}} && \
-  #         echo 'spring.jpa.hibernate.ddl-auto=${{secrets.DDL_AUTO}}' >> ${{env.ENV_SERVER}} && \
-  #         echo 'spring.jpa.properties.hibernate.dialect=${{secrets.DIALECT}}' >> ${{env.ENV_SERVER}} && \
-  #         echo 'application.security.jwt.secret-key=${{secrets.JWT_SECRET_KEY}}' >> ${{env.ENV_SERVER}} && \
-  #         echo 'application.security.jwt.expiration=${{secrets.JWT_EXP}}' >> ${{env.ENV_SERVER}} && \
-  #         echo 'application.security.jwt.refresh-token.expiration=${{secrets.JWT_REFRESH_EXP}}' >> ${{env.ENV_SERVER}}
+      - name: ENV file
+        run: |
+          rm ${{env.ENV_SERVER}} && \
+          echo 'server.port=${{ secrets.SERVER_PORT }}' > ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.url=${{ secrets.DATA_SRC_URL }}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.username=${{secrets.DATA_SRC_USERNAME}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.password=${{secrets.DATA_SRC_PASSWORD}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.datasource.driver-class-name=${{secrets.DRIVER_CLASSNAME}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.jpa.hibernate.ddl-auto=${{secrets.DDL_AUTO}}' >> ${{env.ENV_SERVER}} && \
+          echo 'spring.jpa.properties.hibernate.dialect=${{secrets.DIALECT}}' >> ${{env.ENV_SERVER}} && \
+          echo 'application.security.jwt.secret-key=${{secrets.JWT_SECRET_KEY}}' >> ${{env.ENV_SERVER}} && \
+          echo 'application.security.jwt.expiration=${{secrets.JWT_EXP}}' >> ${{env.ENV_SERVER}} && \
+          echo 'application.security.jwt.refresh-token.expiration=${{secrets.JWT_REFRESH_EXP}}' >> ${{env.ENV_SERVER}}
 
-  #     - name: Start Container
-  #       run: sudo docker compose up -d
+      - name: Start Container
+        run: |
+          cd client && \
+          sudo docker compose up -d
 
-  # deploy-client:
-  #   needs: [build-client-image]
-  #   name: Deploy Preview Client
-  #   runs-on: self-hosted
-  #   steps:
-  #     - name: Checkout source code
-  #       uses: actions/checkout@v2
+  deploy-client:
+    needs: [build-client-image]
+    name: Deploy Preview Client
+    runs-on: [self-hosted, client]
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
 
-  #     - name: Remove and down docker image
-  #       run: |
-  #         sudo docker compose down && \
-  #         sudo docker rmi -f duchungho/client-inf:latest
+      - name: Remove and down docker image
+        run: |
+          cd client && \
+          sudo docker compose down && \
+          sudo docker rm -f duchungho/client-inf:latest
 
-  #     - name: ENV file
-  #       run: |
-  #         echo 'REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}' > ${{env.ENV_CLIENT}} && \
-  #         echo 'REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }}' >> ${{env.ENV_CLIENT}} && \
-  #         echo 'REACT_APP_FIREBASE_AUTH_DOMAIN=${{secrets.REACT_APP_FIREBASE_AUTH_DOMAIN}}' >> ${{env.ENV_CLIENT}} && \
-  #         echo 'REACT_APP_FIREBASE_PROJECT_ID=${{secrets.REACT_APP_FIREBASE_PROJECT_ID}}' >> ${{env.ENV_CLIENT}} && \
-  #         echo 'REACT_APP_FIREBASE_STORAGE_BUCKET=${{secrets.REACT_APP_FIREBASE_STORAGE_BUCKET}}' >> ${{env.ENV_CLIENT}} && \
-  #         echo 'REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${{secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID}}' >> ${{env.ENV_CLIENT}} && \
-  #         echo 'REACT_APP_FIREBASE_APPID=${{secrets.REACT_APP_FIREBASE_APPID}}' >> ${{env.ENV_CLIENT}} && \
-  #         echo 'REACT_APP_FIREBASE_MEASUREMENT_ID=${{secrets.REACT_APP_FIREBASE_MEASUREMENT_ID}}' >> ${{env.ENV_CLIENT}}
+      - name: ENV file
+        run: |
+          echo 'REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}' > ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_AUTH_DOMAIN=${{secrets.REACT_APP_FIREBASE_AUTH_DOMAIN}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_PROJECT_ID=${{secrets.REACT_APP_FIREBASE_PROJECT_ID}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_STORAGE_BUCKET=${{secrets.REACT_APP_FIREBASE_STORAGE_BUCKET}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${{secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_APPID=${{secrets.REACT_APP_FIREBASE_APPID}}' >> ${{env.ENV_CLIENT}} && \
+          echo 'REACT_APP_FIREBASE_MEASUREMENT_ID=${{secrets.REACT_APP_FIREBASE_MEASUREMENT_ID}}' >> ${{env.ENV_CLIENT}}
 
-  #     - name: Start Container
-  #       run: sudo docker compose up -d
+      - name: Start Container
+        run: |
+          cd client && \
+          sudo docker compose up -d
