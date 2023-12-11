@@ -142,6 +142,7 @@ jobs:
 
       - name: ENV file
         run: |
+          touch ${{env.ENV_CLIENT}} && \
           echo 'REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}' > ${{env.ENV_CLIENT}} && \
           echo 'REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }}' >> ${{env.ENV_CLIENT}} && \
           echo 'REACT_APP_FIREBASE_AUTH_DOMAIN=${{secrets.REACT_APP_FIREBASE_AUTH_DOMAIN}}' >> ${{env.ENV_CLIENT}} && \
