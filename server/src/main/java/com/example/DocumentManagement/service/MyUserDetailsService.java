@@ -40,7 +40,7 @@ public class MyUserDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(usersEntity.getUsername(), usersEntity.getPass(), authorities);
     }
 
-    private List<RolesEntity> getAllRoleOfUser(UsersEntity user) {
+    public List<RolesEntity> getAllRoleOfUser(UsersEntity user) {
         List<UserRoleEntity> listUserRole = userRoleRepository.findByUserId(user.getId());
         if (listUserRole.isEmpty()) {
             throw new NotFoundException("Role of user is empty");
