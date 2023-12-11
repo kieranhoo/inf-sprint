@@ -136,13 +136,13 @@ jobs:
 
       - name: Remove and down docker image
         run: |
+          cp ./client/.env.example ${{env.ENV_CLIENT}} && \
           cd client && \
           sudo docker compose down && \
           sudo docker rm -f ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME_CLIENT }}:latest
 
       - name: ENV file
         run: |
-          cp ./client/.env.example ${{env.ENV_CLIENT}} && \
           echo 'REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}' > ${{env.ENV_CLIENT}} && \
           echo 'REACT_APP_FIREBASE_API_KEY=${{ secrets.REACT_APP_FIREBASE_API_KEY }}' >> ${{env.ENV_CLIENT}} && \
           echo 'REACT_APP_FIREBASE_AUTH_DOMAIN=${{secrets.REACT_APP_FIREBASE_AUTH_DOMAIN}}' >> ${{env.ENV_CLIENT}} && \
