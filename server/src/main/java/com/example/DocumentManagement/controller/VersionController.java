@@ -37,4 +37,9 @@ public class VersionController {
     ){
         return ResponseEntity.ok(versionService.getLatestVersionByDocumentId(id));
     }
+
+    @GetMapping("/hello-world")
+    public ResponseEntity<MessageResponse> helloWorld() {
+        return ResponseEntity.ok(versionService.helloWorld());
+    }
 }
