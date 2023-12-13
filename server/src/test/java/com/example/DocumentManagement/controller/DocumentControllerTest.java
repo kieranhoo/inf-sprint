@@ -5,6 +5,8 @@ import com.example.DocumentManagement.entity.DocumentEntity;
 import com.example.DocumentManagement.entity.VersionEntity;
 import com.example.DocumentManagement.request.CreateDocumentRequest;
 import com.example.DocumentManagement.exception.NotFoundException;
+import com.example.DocumentManagement.request.SearchDocumentRequest;
+import com.example.DocumentManagement.request.UpdateDocumentRequest;
 import com.example.DocumentManagement.response.*;
 import com.example.DocumentManagement.service.DocumentService;
 import org.junit.jupiter.api.Assertions;
@@ -23,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class DocumentControllerTest {
@@ -78,7 +81,7 @@ public class DocumentControllerTest {
         // Given
         when(documentService.getDocumentById("2")).thenThrow(new NotFoundException("Document not found!"));
         // When
-        NotFoundException exception = Assertions.assertThrows(NotFoundException.class, () -> {
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
             documentService.getDocumentById("2");
         });
         // Then
@@ -195,4 +198,62 @@ public class DocumentControllerTest {
         assertEquals(expectedResponse, responseEntity.getBody());
         verify(documentService).getDocumentsByDepartmentId(departmentId);
     }
+    @Test
+    void givenValidDocumentId_whenUpdateDocument_thenReturnOK() {
+        // Given
+        String id = "123";
+        UpdateDocumentRequest updateDocumentRequest = new UpdateDocumentRequest("Updated Document", "Updated Description", "http://example.com/document/1", "Version 2.0.0", "Note for update");
+
+        MessageResponse expectedResponse = new MessageResponse("Update Document SuccessFully!");
+
+        when(documentService.updateDocument(updateDocumentRequest, id)).thenReturn(expectedResponse);
+
+        // When
+        ResponseEntity<MessageResponse> responseEntity = documentController.updateDocument(id, updateDocumentRequest);
+
+        // Then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedResponse, responseEntity.getBody());
+        verify(documentService).updateDocument(updateDocumentRequest, id);
+    }
+    @Test
+    void givenInvalidDocumentId_whenUpdateDocument_thenReturnNotFound() {
+        // Given
+        String id = "999"; // Assuming this ID does not exist
+        UpdateDocumentRequest updateDocumentRequest = new UpdateDocumentRequest("Updated Document", "Updated Description", "http://example.com/document/1", "Version 2.0.0", "Note for update");
+
+        when(documentService.updateDocument(updateDocumentRequest, id)).thenThrow(new NotFoundException("Document not found!"));
+
+        // When
+        NotFoundException exception = assertThrows(NotFoundException.class, () -> {
+            documentController.updateDocument(id, updateDocumentRequest);
+        });
+
+        // Then
+        assertEquals("Document not found!", exception.getMessage());
+        verify(documentService).updateDocument(updateDocumentRequest, id);
+    }
+    @Test
+    void givenSearchDocumentRequest_whenSearchDocuments_thenReturnMatchingDocuments() {
+        // Given
+        SearchDocumentRequest searchRequest = new SearchDocumentRequest(1, "keyword");
+
+        DocumentEntity document1 = new DocumentEntity("Document1", "Description1", null, false, null, "1");
+        DocumentEntity document2 = new DocumentEntity("Document2", "Description2", null, false, null, "1");
+        List<DocumentEntity> expectedDocuments = Arrays.asList(document1, document2);
+
+        ListResponse expectedResponse = new ListResponse(expectedDocuments);
+
+        when(documentService.searchDocuments(searchRequest.getDepartmentID(), searchRequest.getKeyword())).thenReturn(expectedResponse);
+
+        // When
+        ResponseEntity<ListResponse> responseEntity = documentController.searchDocuments(searchRequest);
+
+        // Then
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(expectedResponse, responseEntity.getBody());
+        verify(documentService).searchDocuments(searchRequest.getDepartmentID(), searchRequest.getKeyword());
+    }
+
+
 }
