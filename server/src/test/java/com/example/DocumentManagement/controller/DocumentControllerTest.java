@@ -3,6 +3,7 @@ package com.example.DocumentManagement.controller;
 import com.example.DocumentManagement.entity.DepartmentEntity;
 import com.example.DocumentManagement.entity.DocumentEntity;
 import com.example.DocumentManagement.entity.VersionEntity;
+import com.example.DocumentManagement.exception.BadRequestException;
 import com.example.DocumentManagement.request.CreateDocumentRequest;
 import com.example.DocumentManagement.exception.NotFoundException;
 import com.example.DocumentManagement.request.SearchDocumentRequest;
@@ -88,7 +89,34 @@ public class DocumentControllerTest {
         Assertions.assertEquals("Document not found!", exception.getMessage());
         verify(documentService).getDocumentById("2");
     }
+    @Test
+    void givenNullId_whenGetDocumentById_thenReturnException() {
+        // Given
+        when(documentService.getDocumentById(null)).thenThrow(new BadRequestException("Request must be a Integer"));
 
+        // When
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            documentService.getDocumentById(null);
+        });
+
+        // Then
+        Assertions.assertEquals("Request must be a Integer", exception.getMessage());
+        verify(documentService).getDocumentById(null);
+    }
+    @Test
+    void givenInvalidId_whenGetDocumentById_thenReturnException() {
+        // Given
+        when(documentService.getDocumentById("abcd")).thenThrow(new BadRequestException("Request must be a Integer"));
+
+        // When
+        BadRequestException exception = assertThrows(BadRequestException.class, () -> {
+            documentService.getDocumentById("abcd");
+        });
+
+        // Then
+        Assertions.assertEquals("Request must be a Integer", exception.getMessage());
+        verify(documentService).getDocumentById("abcd");
+    }
     @Test
     void givenDocument_whenGetAllDocuments_thenReturnListDocumentsResponse () {
         // Given

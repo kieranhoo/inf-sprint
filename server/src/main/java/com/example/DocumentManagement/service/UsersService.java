@@ -27,7 +27,11 @@ public class UsersService extends SupportFunction {
 
     public UsersEntity getUserById(String idFromPathVariable) {
         int id = checkRequest(idFromPathVariable);
-        return usersRepository.findUserById(id);
+        UsersEntity usersEntity = usersRepository.findUserById(id);
+        if (usersEntity == null) {
+            throw new NotFoundException("User doesn't exist.");
+        }
+        return usersEntity;
     }
 
     public OneUserResponse getOneUser(String accessToken) {
