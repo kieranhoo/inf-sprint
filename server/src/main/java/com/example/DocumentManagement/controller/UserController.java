@@ -26,7 +26,11 @@ public class UserController {
     public ResponseEntity<UsersEntity> getUserById(
             @PathVariable(name = "id") String id
     ) {
-        return ResponseEntity.ok(usersService.getUserById(id));
+        UsersEntity response = usersService.getUserById(id);
+        if (response == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/info")
