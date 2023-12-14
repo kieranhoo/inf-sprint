@@ -40,7 +40,6 @@ public class AuthenticationControllerTest {
 
         verify(service, times(1)).refreshToken(request, response);
         verifyNoMoreInteractions(service);
-
     }
 
     @Test
