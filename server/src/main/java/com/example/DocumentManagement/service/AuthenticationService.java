@@ -72,8 +72,10 @@ public class AuthenticationService extends SupportFunction {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        var user = userRepository.findByUsernameOrEmailAndIsDeletedFalse(request.getEmail(), request.getEmail())
-                .orElseThrow(() -> new NotFoundException("Not found user name or email"));
+        UsersEntity user = userRepository.findByUsernameOrEmail(request.getEmail(), request.getEmail());
+        if(user == null) {
+            throw new NotFoundException("Not found user name or email");
+        }
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -126,16 +128,14 @@ public class AuthenticationService extends SupportFunction {
         throw new MalformedJwtException("token invalid");
     }
 
-    private void saveUserToken(UsersEntity user, String jwtToken, String tokenCategory) {
+    public void saveUserToken(UsersEntity user, String jwtToken, String tokenCategory) {
         var token = TokenEntity.builder()
                 .userId(user.getId())
                 .token(jwtToken)
-                .tokenTypeId(tokenTypeRepository.findByTokenTypeName("BEARER").get().getId())
+                .tokenTypeId(tokenTypeRepository.findTypeByTokenTypeName("BEARER").getId())
                 .expired(false)
                 .revoked(false)
-                .tokenCategoryId(tokenCategoryRepository.findByTokenCategoryName(tokenCategory)
-                        .orElseThrow()
-                        .getId())
+                .tokenCategoryId(tokenCategoryRepository.findCategoryByTokenCategoryName(tokenCategory).getId())
                 .build();
         tokenRepository.save(token);
     }
