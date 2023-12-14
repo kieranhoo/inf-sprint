@@ -71,4 +71,17 @@ public class VersionControllerTest {
         Assertions.assertEquals(expectedResponse, result.getBody());
         verify(versionService).getLatestVersionByDocumentId(id);
     }
+
+    @Test
+    void testHelloWorld() {
+        // Given
+        MessageResponse expectedResponse = new MessageResponse("Hello World");
+        when(versionService.helloWorld()).thenReturn(expectedResponse);
+        // When
+        ResponseEntity<MessageResponse> result = versionController.helloWorld();
+        // Then
+        Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+        Assertions.assertEquals(expectedResponse, result.getBody());
+        verify(versionService).helloWorld();
+    }
 }

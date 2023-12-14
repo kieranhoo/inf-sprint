@@ -17,8 +17,7 @@ import java.sql.Date;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,17 +43,28 @@ class VersionServiceTest {
         assertEquals(new ListResponse(expectedVersions), result);
     }
 
+    @Test
     void givenZeroVersion_whenGetAllVersions_thenReturnListResponse() {
         // Given
         String documentIdFromParam = "123";
         int documentId = 123;
-        List<VersionEntity> expectedVersions = Arrays.asList();
+        List<VersionEntity> expectedVersions = List.of();
         when(versionRepository.findByDocumentId(documentId)).thenReturn(expectedVersions);
         // When
         ListResponse result = versionService.getAllVersions(documentIdFromParam);
         // Then
         assertEquals(new ListResponse(expectedVersions), result);
     }
+
+    @Test
+    void givenInvalidId_whenGetOneVersion_thenThrowBadRequestException() {
+        // Given
+        String idFromPathVariable = "abc";
+        // When
+        // Then
+        assertThrows(BadRequestException.class, () -> versionService.getOneVersion(idFromPathVariable));
+    }
+
 
     @Test
     void givenId_whenGetOneVersion_thenReturnVersion() {
@@ -79,14 +89,14 @@ class VersionServiceTest {
         // When
         when(versionRepository.findById(id)).thenReturn(null);
         // Then
-        assertEquals(null, versionService.getOneVersion(idFromPathVariable));
+        assertNull(versionService.getOneVersion(idFromPathVariable));
         // Verify that the method findById() is called with the correct argument
         verify(versionRepository).findById(id);
     }
 
     @Test
-    void getLatestVersionByDocumentId() {
         // Given
+    void givenId_whenGetLatestVersionByDocumentId_thenReturnMessageResponse() {
         String idFromPathVariable = "123";
         int id = 123;
         String expectedVersion = "Version 1.0.0";
@@ -97,5 +107,25 @@ class VersionServiceTest {
         assertEquals(expectedVersion, result.getMessage());
         // Verify that the method findLatestVersionByDocumentId() is called with the correct argument
         verify(versionRepository).findLatestVersionByDocumentId(id);
+    }
+
+    @Test
+    void givenInvalidId_whenGetLatestVersionByDocumentId_thenThrowBadRequestException() {
+        // Given
+        String idFromPathVariable = "abc";
+        // When
+        // Then
+        assertThrows(BadRequestException.class, () -> versionService.getLatestVersionByDocumentId(idFromPathVariable));
+    }
+
+
+    @Test
+    void testHelloWorld() {
+        // Given
+        MessageResponse expectedResponse = new MessageResponse("Hello World");
+        // When
+        MessageResponse result = versionService.helloWorld();
+        // Then
+        assertEquals(expectedResponse, result);
     }
 }
