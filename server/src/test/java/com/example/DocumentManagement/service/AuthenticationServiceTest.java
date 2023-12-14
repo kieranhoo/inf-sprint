@@ -1,10 +1,9 @@
 package com.example.DocumentManagement.service;
 
-import com.example.DocumentManagement.entity.*;
 import com.example.DocumentManagement.entity.MyUserDetails;
+import com.example.DocumentManagement.entity.*;
 import com.example.DocumentManagement.exception.BadRequestException;
 import com.example.DocumentManagement.exception.ConflictException;
-import com.example.DocumentManagement.exception.ForbiddenException;
 import com.example.DocumentManagement.exception.NotFoundException;
 import com.example.DocumentManagement.repository.*;
 import com.example.DocumentManagement.request.AuthenticationRequest;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -89,7 +87,6 @@ class AuthenticationServiceTest {
         UserRoleEntity userRole = new UserRoleEntity(usersEntity.getId(), 1);
         DepartmentEntity departmentEntity = new DepartmentEntity("Development", "Description 1");
 
-        lenient().when(departmentRepository.save(any(DepartmentEntity.class))).thenReturn(departmentEntity);
         when(departmentRepository.findDepartmentById(1)).thenReturn(departmentEntity);
         when(usersRepository.save(any(UsersEntity.class))).thenReturn(usersEntity);
         when(userRoleRepository.save(any(UserRoleEntity.class))).thenReturn(userRole);
@@ -132,7 +129,6 @@ class AuthenticationServiceTest {
                 .isDeleted(false)
                 .pass(passwordEncoder.encode(userCreateRequest.getPassword()))
                 .build();
-        lenient().when(usersRepository.save(any(UsersEntity.class))).thenReturn(usersEntity);
         when(usersRepository.findByUsernameOrEmail(name[0], userCreateRequest.getEmail())).thenReturn(usersEntity);
 
         Exception exception = assertThrows(ConflictException.class, () -> {
@@ -168,7 +164,6 @@ class AuthenticationServiceTest {
         );
         DepartmentEntity departmentEntity = new DepartmentEntity("Development", "Description 1");
 
-        lenient().when(departmentRepository.save(any(DepartmentEntity.class))).thenReturn(departmentEntity);
         when(departmentRepository.findDepartmentById(1)).thenReturn(departmentEntity);
 
         Exception exception = assertThrows(NotFoundException.class, () -> {
@@ -197,10 +192,6 @@ class AuthenticationServiceTest {
         userPasswordEncode.setPass(passwordEncoder.encode("pass123"));
 
         /*------------------When--------------------*/
-        lenient().doAnswer(invocationOnMock -> {
-            ReflectionTestUtils.setField((UsersEntity) invocationOnMock.getArgument(0), "id", "1");
-            return null;
-        }).when(usersRepository).save(userPasswordEncode);
         when(usersRepository.findByUsernameOrEmail(usersEntity.getEmail(), usersEntity.getEmail()))
                 .thenReturn(usersEntity);
 
@@ -211,26 +202,13 @@ class AuthenticationServiceTest {
         when(myUserDetailsService.createMyUserDetails(usersEntity)).thenReturn(myUserDetails);
 
         //Token Type
-        lenient().doAnswer(invocationOnMock -> {
-            ReflectionTestUtils.setField((TokenTypeEntity) invocationOnMock.getArgument(0), "id", "1");
-            return null;
-        }).when(tokenTypeRepository).save(tokenTypeEntity);
         when(tokenTypeRepository.findTypeByTokenTypeName("BEARER")).thenReturn(tokenTypeEntity);
 
         //Token Category
         //Access
-        lenient().doAnswer(invocationOnMock -> {
-            ReflectionTestUtils.setField((TokenCategoryEntity) invocationOnMock.getArgument(0), "id", "1");
-            return null;
-        }).when(tokenCategoryRepository).save(tokenCategoryAccess);
         when(tokenCategoryRepository.findCategoryByTokenCategoryName("ACCESS")).thenReturn(tokenCategoryAccess);
         //Refresh
-        lenient().doAnswer(invocationOnMock -> {
-            ReflectionTestUtils.setField((TokenCategoryEntity) invocationOnMock.getArgument(0), "id", "2");
-            return null;
-        }).when(tokenCategoryRepository).save(tokenCategoryRefresh);
         when(tokenCategoryRepository.findCategoryByTokenCategoryName("REFRESH")).thenReturn(tokenCategoryRefresh);
-
 
         /*------------------Then--------------------*/
         AuthenticationResponse authenticationResponse = authenticationService.authenticate(authenticationRequest);
@@ -265,18 +243,10 @@ class AuthenticationServiceTest {
 
         /*------------------When--------------------*/
         //Token Type
-        lenient().doAnswer(invocationOnMock -> {
-            ReflectionTestUtils.setField((TokenTypeEntity) invocationOnMock.getArgument(0), "id", "1");
-            return null;
-        }).when(tokenTypeRepository).save(tokenTypeEntity);
         when(tokenTypeRepository.findTypeByTokenTypeName("BEARER")).thenReturn(tokenTypeEntity);
 
         //Token Category
         //Access
-        lenient().doAnswer(invocationOnMock -> {
-            ReflectionTestUtils.setField((TokenCategoryEntity) invocationOnMock.getArgument(0), "id", "1");
-            return null;
-        }).when(tokenCategoryRepository).save(tokenCategoryAccess);
         when(tokenCategoryRepository.findCategoryByTokenCategoryName("ACCESS")).thenReturn(tokenCategoryAccess);
 
         /*------------------Then--------------------*/
@@ -293,18 +263,10 @@ class AuthenticationServiceTest {
 
         /*------------------When--------------------*/
         //Token Type
-        lenient().doAnswer(invocationOnMock -> {
-            ReflectionTestUtils.setField((TokenTypeEntity) invocationOnMock.getArgument(0), "id", "1");
-            return null;
-        }).when(tokenTypeRepository).save(tokenTypeEntity);
         when(tokenTypeRepository.findTypeByTokenTypeName("BEARER")).thenReturn(tokenTypeEntity);
 
         //Token Category
         //Access
-        lenient().doAnswer(invocationOnMock -> {
-            ReflectionTestUtils.setField((TokenCategoryEntity) invocationOnMock.getArgument(0), "id", "1");
-            return null;
-        }).when(tokenCategoryRepository).save(tokenCategoryAccess);
         when(tokenCategoryRepository.findCategoryByTokenCategoryName("ACCESS")).thenReturn(tokenCategoryAccess);
 
         /*------------------Then--------------------*/
@@ -313,9 +275,8 @@ class AuthenticationServiceTest {
     }
 
     @Test
-    void getUserRole_Successfully(){
+    void getUserRole_Successfully() {
         UsersEntity usersEntity = createMockUser("hubatin@gmail.com", "pass123", "Admin", 1);
-        UserRoleEntity userRole = new UserRoleEntity(usersEntity.getId(), 1);
 
         RolesEntity roles = new RolesEntity("Admin");
         roles.setId(1);
@@ -323,9 +284,7 @@ class AuthenticationServiceTest {
         List<UserRoleEntity> userRoleEntities = new ArrayList<>();
         userRoleEntities.add(new UserRoleEntity(1, 1));
 
-        lenient().when(userRoleRepository.save(any(UserRoleEntity.class))).thenReturn(userRole);
         when(userRoleRepository.findByUserId(usersEntity.getId())).thenReturn(userRoleEntities);
-        lenient().when(rolesRepository.save(any(RolesEntity.class))).thenReturn(roles);
         when(rolesRepository.findOneById(1)).thenReturn(roles);
 
         List<String> response = authenticationService.getUserRole(usersEntity.getId());
