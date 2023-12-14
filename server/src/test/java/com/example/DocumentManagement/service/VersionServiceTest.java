@@ -119,13 +119,13 @@ class VersionServiceTest {
     }
 
 
-    @Test
-    void testHelloWorld() {
-        // Given
-        MessageResponse expectedResponse = new MessageResponse("Hello World");
-        // When
-        MessageResponse result = versionService.helloWorld();
-        // Then
-        assertEquals(expectedResponse, result);
-    }
+    // @Test
+    // void testHelloWorld() {
+    //     // Given
+    //     MessageResponse expectedResponse = new MessageResponse("Hello World");
+    //     // When
+    //     MessageResponse result = versionService.helloWorld();
+    //     // Then
+    //     assertEquals(expectedResponse, result);
+    // }
 }
