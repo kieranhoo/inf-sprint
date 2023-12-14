@@ -40,7 +40,7 @@ class VersionServiceTest {
         // When
         ListResponse result = versionService.getAllVersions(documentIdFromParam);
         // Then
-        assertEquals(new ListResponse(expectedVersions), result);
+        assertEquals(new ListResponse(expectedVersions), "");
     }
 
     @Test
