@@ -179,45 +179,6 @@ public class MyUserDetails {
     @Test
     public void testLoadUserByUsername_UserNameEmpty() {
         // Mock User
-        UsersEntity mockUser = new UsersEntity();
-        mockUser.setId(1);
-        mockUser.setDepartmentId(1);
-        mockUser.setUsername("ducan1406");
-        mockUser.setEmail("ducan1406@gmail.com");
-        mockUser.setPass("123456");
-
-        // Mock Role 1
-        RolesEntity mockRole1 = new RolesEntity();
-        mockRole1.setId(1);
-        mockRole1.setRole("READ");
-
-        // Mock Role 2
-        RolesEntity mockRole2 = new RolesEntity();
-        mockRole2.setId(2);
-        mockRole2.setRole("WRITE");
-
-        // Mock User Role 1
-        UserRoleEntity mockUserRole1 = new UserRoleEntity();
-        mockUserRole1.setId(1);
-        mockUserRole1.setUserId(mockUser.getId());
-        mockUserRole1.setRoleId(1);
-
-        // Mock User Role 2
-        UserRoleEntity mockUserRole2 = new UserRoleEntity();
-        mockUserRole2.setId(2);
-        mockUserRole2.setUserId(mockUser.getId());
-        mockUserRole2.setRoleId(2);
-
-        // Configure mock behavior for username not found
-        when(usersRepository.findByUsernameOrEmailAndIsDeletedFalse("", ""))
-                .thenReturn(Optional.empty()); // Empty string as the username
-
-        when(userRoleRepository.findByUserId(mockUser.getId()))
-                .thenReturn(Arrays.asList(mockUserRole1, mockUserRole2));
-
-        when(rolesRepository.findOneById(mockUserRole1.getRoleId())).thenReturn(mockRole1);
-
-        when(rolesRepository.findOneById(mockUserRole2.getRoleId())).thenReturn(mockRole2);
 
         // Assert that a UsernameNotFoundException is thrown when the username is empty
         assertThrows(UsernameNotFoundException.class, () -> {
