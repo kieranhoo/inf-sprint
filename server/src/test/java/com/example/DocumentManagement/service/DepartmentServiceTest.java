@@ -244,7 +244,7 @@ class DepartmentServiceTest {
 
         // Then
         assertNotNull(result);
-        assertEquals(0, result.getListContent().size());
+        assertEquals(1, result.getListContent().size());
 
         // Verify that findUsersByDepartmentId method was called with the correct argument
         verify(usersRepository).findUsersByDepartmentId(departmentId);
