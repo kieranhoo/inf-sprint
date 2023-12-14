@@ -282,7 +282,7 @@ public class DocumentServiceTest {
     }
 
     @Test
-    void givenTrueDocumentId_whenDeleteDocumentById_thenException() {
+    void givenTrueDocumentId_whenDeleteDocumentById_thenReturnMessageSuccessfully() {
         // Given
         String documentId = "1";
         DocumentEntity document = new DocumentEntity("Document1", "Document1 Description", Date.valueOf("2023-11-10"), false, null, "1");
