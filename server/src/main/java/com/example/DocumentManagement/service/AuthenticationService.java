@@ -111,8 +111,8 @@ public class AuthenticationService extends SupportFunction {
         if (userEmail != null) {
             var user = this.userRepository.findByUsernameOrEmailAndIsDeletedFalse(userEmail, userEmail)
                     .orElseThrow(() -> new NotFoundException("REFRESH token not found or expired"));
-            tokenRepository.findByTokenAndAndTokenCategoryIdAndExpiredFalseAndRevokedFalse(refreshToken, tokenCategoryRepository.findByTokenCategoryName("REFRESH").orElseThrow().getId())
-                    .orElseThrow(() -> new NotFoundException("REFRESH token not found or expired "));
+            tokenRepository.findByTokenAndAndTokenCategoryIdAndExpiredFalseAndRevokedFalse(refreshToken, tokenCategoryRepository.findCategoryByTokenCategoryName("REFRESH").getId())
+                    .orElseThrow(() -> new NotFoundException("REFRESH token not found or expired"));
             MyUserDetails myUserDetails = myUserDetailsService.createMyUserDetails(user);
             if (jwtService.isTokenValid(refreshToken, myUserDetails)) {
                 var accessToken = jwtService.generateToken(myUserDetails, user.getId().toString(), getUserRole(user.getId()));
@@ -157,7 +157,7 @@ public class AuthenticationService extends SupportFunction {
         return roles;
     }
 
-    private void revokeAllUserTokens(UsersEntity user) {
+    public void revokeAllUserTokens(UsersEntity user) {
         var validUserTokens = tokenRepository.findAllByUserIdAndExpiredFalseAndRevokedFalse(user.getId());
         if (validUserTokens.isEmpty())
             return;
@@ -168,8 +168,8 @@ public class AuthenticationService extends SupportFunction {
         tokenRepository.saveAll(validUserTokens);
     }
 
-    private void revokeAllUserTokensAccess(UsersEntity user) {
-        var validUserTokens = tokenRepository.findAllByUserIdAndTokenCategoryIdAndExpiredFalseAndRevokedFalse(user.getId(), tokenCategoryRepository.findByTokenCategoryName("ACCESS").get().getId());
+    public void revokeAllUserTokensAccess(UsersEntity user) {
+        var validUserTokens = tokenRepository.findAllByUserIdAndTokenCategoryIdAndExpiredFalseAndRevokedFalse(user.getId(), tokenCategoryRepository.findCategoryByTokenCategoryName("ACCESS").getId());
         if (validUserTokens.isEmpty())
             return;
         validUserTokens.forEach(token -> {

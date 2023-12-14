@@ -10,20 +10,24 @@ import com.example.DocumentManagement.request.AuthenticationRequest;
 import com.example.DocumentManagement.request.UserCreateRequest;
 import com.example.DocumentManagement.response.AuthenticationResponse;
 import com.example.DocumentManagement.response.MessageResponse;
+import io.jsonwebtoken.MalformedJwtException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,7 +73,7 @@ class AuthenticationServiceTest {
     private JwtService jwtService;
 
     @Test
-    void registerSuccessfully() {
+    void register_Successfully() {
         UserCreateRequest userCreateRequest = new UserCreateRequest(
                 "baotin172@gmail.com",
                 "pass123",
@@ -227,6 +231,113 @@ class AuthenticationServiceTest {
     }
 
     @Test
+    void refreshToken_Successfully() {
+        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiYmFvdGluZGVwdHJhaSIsImlhdCI6MTcwMTM0OTU0OSwiZXhwIjoxNzAxMzUwNDQ5fQ.nyNTxsUI3jfOVsYhK_KgbA8jsMUz2RedNhVHdUQNTWY";
+        TokenEntity tokenEntity = new TokenEntity(
+                "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiYmFvdGluZGVwdHJhaSIsImlhdCI6MTcwMTM0OTU0OSwiZXhwIjoxNzAxMzUwNDQ5fQ.nyNTxsUI3jfOVsYhK_KgbA8jsMUz2RedNhVHdUQNTWY",
+                1,
+                false,
+                false,
+                1,
+                1
+        );
+        TokenTypeEntity tokenTypeEntity = createTokenType();
+        TokenCategoryEntity tokenCategoryAccess = createTokenCategory("ACCESS");
+        TokenCategoryEntity tokenCategoryRefresh = createTokenCategory("REFRESH");
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiYmFvdGluZGVwdHJhaSIsImlhdCI6MTcwMTM0OTU0OSwiZXhwIjoxNzAxMzUwNDQ5fQ.nyNTxsUI3jfOVsYhK_KgbA8jsMUz2RedNhVHdUQNTWY");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        UsersEntity usersEntity = createMockUser("hubatin@gmail.com", "pass123", "Admin", 1);
+        MyUserDetails myUserDetails = myUserDetailsService.createMyUserDetails(usersEntity);
+
+        //extract email to make email is not null
+        lenient().when(jwtService.extractUsername(refreshToken)).thenReturn(usersEntity.getEmail());
+        //check if condition userEmail != null
+        when(usersRepository.findByUsernameOrEmailAndIsDeletedFalse(usersEntity.getEmail(), usersEntity.getEmail()))
+                .thenReturn(Optional.of(usersEntity));
+        when(tokenCategoryRepository.findCategoryByTokenCategoryName("REFRESH")).thenReturn(tokenCategoryRefresh);
+        when(tokenRepository.findByTokenAndAndTokenCategoryIdAndExpiredFalseAndRevokedFalse(refreshToken, 1))
+                .thenReturn(Optional.of(tokenEntity));
+        when(myUserDetailsService.createMyUserDetails(usersEntity)).thenReturn(myUserDetails);
+
+        //Check when if condition jwtService.isTokenValid(refreshToken, myUserDetails)
+        when(jwtService.isTokenValid(refreshToken, myUserDetails)).thenReturn(true);
+        when(tokenCategoryRepository.findCategoryByTokenCategoryName("ACCESS")).thenReturn(tokenCategoryAccess);
+        when(tokenTypeRepository.findTypeByTokenTypeName("BEARER")).thenReturn(tokenTypeEntity);
+
+        AuthenticationResponse authenticationResponse = authenticationService.refreshToken(request, response);
+        Assertions.assertThat(authenticationResponse).isNotNull();
+    }
+
+    @Test
+    void refreshToken_BadRequestException() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION, "aaaa eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiYmFvdGluZGVwdHJhaSIsImlhdCI6MTcwMTM0OTU0OSwiZXhwIjoxNzAxMzUwNDQ5fQ.nyNTxsUI3jfOVsYhK_KgbA8jsMUz2RedNhVHdUQNTWY");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        Exception exception = assertThrows(BadRequestException.class, () -> {
+            authenticationService.refreshToken(request, response);
+        });
+
+        Assertions.assertThat(exception.getMessage()).isEqualTo("header is null or didn't not start with Bearer");
+    }
+
+    @Test
+    void refreshToken_NotFoundException_ByUser() {
+        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiYmFvdGluZGVwdHJhaSIsImlhdCI6MTcwMTM0OTU0OSwiZXhwIjoxNzAxMzUwNDQ5fQ.nyNTxsUI3jfOVsYhK_KgbA8jsMUz2RedNhVHdUQNTWY";
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiYmFvdGluZGVwdHJhaSIsImlhdCI6MTcwMTM0OTU0OSwiZXhwIjoxNzAxMzUwNDQ5fQ.nyNTxsUI3jfOVsYhK_KgbA8jsMUz2RedNhVHdUQNTWY");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        UsersEntity usersEntity = createMockUser("hubatin@gmail.com", "pass123", "Admin", 1);
+
+        lenient().when(jwtService.extractUsername(refreshToken)).thenReturn(usersEntity.getEmail());
+
+        Exception exception = assertThrows(NotFoundException.class, () -> {
+            authenticationService.refreshToken(request, response);
+        });
+
+        Assertions.assertThat(exception.getMessage()).isEqualTo("REFRESH token not found or expired");
+    }
+
+    @Test
+    void refreshToken_NotFoundException_ByToken() {
+        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiYmFvdGluZGVwdHJhaSIsImlhdCI6MTcwMTM0OTU0OSwiZXhwIjoxNzAxMzUwNDQ5fQ.nyNTxsUI3jfOVsYhK_KgbA8jsMUz2RedNhVHdUQNTWY";
+        TokenCategoryEntity tokenCategoryRefresh = createTokenCategory("REFRESH");
+
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiYmFvdGluZGVwdHJhaSIsImlhdCI6MTcwMTM0OTU0OSwiZXhwIjoxNzAxMzUwNDQ5fQ.nyNTxsUI3jfOVsYhK_KgbA8jsMUz2RedNhVHdUQNTWY");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        UsersEntity usersEntity = createMockUser("hubatin@gmail.com", "pass123", "Admin", 1);
+
+        lenient().when(jwtService.extractUsername(refreshToken)).thenReturn(usersEntity.getEmail());
+        when(usersRepository.findByUsernameOrEmailAndIsDeletedFalse(usersEntity.getEmail(), usersEntity.getEmail()))
+                .thenReturn(Optional.of(usersEntity));
+        when(tokenCategoryRepository.findCategoryByTokenCategoryName("REFRESH")).thenReturn(tokenCategoryRefresh);
+
+        Exception exception = assertThrows(NotFoundException.class, () -> {
+            authenticationService.refreshToken(request, response);
+        });
+
+        Assertions.assertThat(exception.getMessage()).isEqualTo("REFRESH token not found or expired");
+    }
+
+    @Test
+    void refreshToken_TokenInvalid() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFTVBMT1lFRSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiYmFvdGluZGVwdHJhaSIsImlhdCI6MTcwMTM0OTU0OSwiZXhwIjoxNzAxMzUwNDQ5fQ.nyNTxsUI3jfOVsYhK_KgbA8jsMUz2RedNhVHdUQNTWY");
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        UsersEntity usersEntity = createMockUser("hubatin@gmail.com", "pass123", "Admin", 1);
+
+        Exception exception = assertThrows(MalformedJwtException.class, () -> {
+            authenticationService.refreshToken(request, response);
+        });
+
+        Assertions.assertThat(exception.getMessage()).isEqualTo("token invalid");
+    }
+
+    @Test
     void saveUserToken_Successfully() {
         /*------------------Given--------------------*/
         UsersEntity usersEntity = createMockUser("hubatin@gmail.com", "pass123", "Admin", 1);
@@ -291,6 +402,62 @@ class AuthenticationServiceTest {
         List<String> expected = new ArrayList<>();
         expected.add("Admin");
         Assertions.assertThat(response).isEqualTo(expected);
+    }
+
+    @Test
+    void revokeAllUserTokens_Successfully() {
+        UsersEntity usersEntity = createMockUser("hubatin@gmail.com", "pass123", "Admin", 1);
+        List<TokenEntity> listToken = new ArrayList<>();
+        listToken.add(new TokenEntity(
+                "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFbXBsb3llZSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiZW1wbG95ZWUiLCJpYXQiOjE3MDIxOTA4MzUsImV4cCI6MTcwMjE5MTczNX0.StBQ-PPRenx1hlgd1tVvQvrP6_DLjSRJmu-gmY6C57Q",
+                1,
+                false,
+                false,
+                1,
+                1
+        ));
+        listToken.add(new TokenEntity(
+                "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFbXBsb3llZSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiZW1wbG95ZWUiLCJpYXQiOjE3MDIxOTA4MzUsImV4cCI6MTcwMjE5MTczNX0.StBQ-PPRenx1hlgd1tVvQvrP6_DLjSRJmu-gmY6C57Q",
+                1,
+                false,
+                false,
+                1,
+                1
+        ));
+
+        when(tokenRepository.findAllByUserIdAndExpiredFalseAndRevokedFalse(usersEntity.getId())).thenReturn(listToken);
+
+        authenticationService.revokeAllUserTokens(usersEntity);
+        verify(tokenRepository).saveAll(listToken);
+    }
+
+    @Test
+    void revokeAllUserTokensAccess_Successfully() {
+        UsersEntity usersEntity = createMockUser("hubatin@gmail.com", "pass123", "Admin", 1);
+        List<TokenEntity> listToken = new ArrayList<>();
+        listToken.add(new TokenEntity(
+                "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFbXBsb3llZSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiZW1wbG95ZWUiLCJpYXQiOjE3MDIxOTA4MzUsImV4cCI6MTcwMjE5MTczNX0.StBQ-PPRenx1hlgd1tVvQvrP6_DLjSRJmu-gmY6C57Q",
+                1,
+                false,
+                false,
+                1,
+                1
+        ));
+        listToken.add(new TokenEntity(
+                "eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJFbXBsb3llZSJdLCJ1c2VySWQiOiIxIiwic3ViIjoiZW1wbG95ZWUiLCJpYXQiOjE3MDIxOTA4MzUsImV4cCI6MTcwMjE5MTczNX0.StBQ-PPRenx1hlgd1tVvQvrP6_DLjSRJmu-gmY6C57Q",
+                1,
+                false,
+                false,
+                1,
+                1
+        ));
+        TokenCategoryEntity tokenCategoryAccess = createTokenCategory("ACCESS");
+
+        when(tokenRepository.findAllByUserIdAndTokenCategoryIdAndExpiredFalseAndRevokedFalse(usersEntity.getId(), 1)).thenReturn(listToken);
+        when(tokenCategoryRepository.findCategoryByTokenCategoryName("ACCESS")).thenReturn(tokenCategoryAccess);
+
+        authenticationService.revokeAllUserTokensAccess(usersEntity);
+        verify(tokenRepository).saveAll(listToken);
     }
 
 
