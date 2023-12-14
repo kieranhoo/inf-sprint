@@ -134,6 +134,17 @@ public class DocumentControllerTest {
     }
 
     @Test
+    void givenZeroDocuments_whenGetAllDocuments_thenReturnListZeroDocumentsResponse () {
+        // Given
+        when(documentService.getAllDocuments()).thenReturn(new ListResponse(Collections.emptyList()));
+        // When
+        ResponseEntity<ListResponse> result = documentController.getAllDocuments();
+        // Then
+        Assertions.assertEquals(HttpStatus.OK, result.getStatusCode());
+        Assertions.assertEquals(0, result.getBody().getListContent().size());
+        verify(documentService).getAllDocuments();
+    }
+    @Test
     void givenNewDocumentData_whenCreateDocuments_thenReturnOK() {
         // Given
         CreateDocumentRequest newDocumentData = new CreateDocumentRequest("doc 1", "description for doc 1", "http://example.com/document/1", "Version 1.0.0", "note for doc 1", "1");
