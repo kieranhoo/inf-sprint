@@ -172,7 +172,7 @@ public class DocumentServiceTest {
     }
 
     @Test
-    void givenNewDocumentDataWithWrongDepartmentId_whenCreateDocuments_thenReturnMessageSuccessfully() {
+    void givenNewDocumentDataWithWrongDepartmentId_whenCreateDocuments_thenException() {
         // Given
         CreateDocumentRequest newDocumentData = new CreateDocumentRequest(
                 "doc 1",
@@ -195,7 +195,24 @@ public class DocumentServiceTest {
     }
 
     @Test
-    void givenTrueDepartmentIdWithDocuments_whenGetDocumentsByDepartmentId_thenReturnDocuments() {
+    void givenZeroDocumentsWithWrongDepartmentId_whenGetDocumentsByDepartmentId_thenException() {
+        // Given
+        String departmentId = "1";
+        MessageResponse expectedResponse = new MessageResponse("Document not found!");
+        // Mock repository calls
+        when(documentRepository.findDocumentsByDepartmentId(Integer.parseInt(departmentId))).thenReturn(null);
+        // When
+        Exception exception = assertThrows(NotFoundException.class, () -> {
+            documentService.getDocumentsByDepartmentId(departmentId);
+        });
+        // Then
+        Assertions.assertEquals(expectedResponse.getMessage(), exception.getMessage());
+        // Verify repository calls
+        verify(documentRepository).findDocumentsByDepartmentId(Integer.parseInt(departmentId));
+    }
+
+    @Test
+    void givenDocumentsWithTrueDepartmentId_whenGetDocumentsByDepartmentId_thenReturnDocuments() {
         // Given
         String departmentId = "1";
         DepartmentEntity departmentEntity = new DepartmentEntity("Management", "Management Room");
@@ -232,7 +249,7 @@ public class DocumentServiceTest {
     }
 
     @Test
-    void givenTrueDepartmentIdWithNoDocuments_whenGetDocumentsByDepartmentId_thenReturnDocuments() {
+    void givenZeroDocumentsWithTrueDepartmentId_whenGetDocumentsByDepartmentId_thenReturnZeroDocuments() {
         // Given
         String departmentId = "1";
         List<DocumentEntity> documents = Arrays.asList();
@@ -246,6 +263,41 @@ public class DocumentServiceTest {
         // Verify repository calls
         verify(documentRepository).findDocumentsByDepartmentId(Integer.parseInt(departmentId));
     }
+
+    @Test
+    void givenWrongDocumentId_whenDeleteDocumentById_thenException() {
+        // Given
+        String documentId = "1";
+        MessageResponse expectedResponse = new MessageResponse("Document not found!");
+        // Mock repository calls
+        when(documentRepository.findDocumentById(Integer.parseInt(documentId))).thenReturn(null);
+        // When
+        Exception exception = assertThrows(NotFoundException.class, () -> {
+            documentService.deleteDocumentById(documentId);
+        });
+        // Then
+        Assertions.assertEquals(expectedResponse.getMessage(), exception.getMessage());
+        // Verify repository calls
+        verify(documentRepository).findDocumentById(Integer.parseInt(documentId));
+    }
+
+    @Test
+    void givenTrueDocumentId_whenDeleteDocumentById_thenException() {
+        // Given
+        String documentId = "1";
+        DocumentEntity document = new DocumentEntity("Document1", "Document1 Description", Date.valueOf("2023-11-10"), false, null, "1");
+        document.setId(1);
+        MessageResponse expectedResponse = new MessageResponse("Delete Document SuccessFully!");
+        // Mock repository calls
+        when(documentRepository.findDocumentById(Integer.parseInt(documentId))).thenReturn(document);
+        // When
+        MessageResponse response = documentService.deleteDocumentById(documentId);
+        // Then
+        Assertions.assertEquals(expectedResponse.getMessage(), response.getMessage());
+        // Verify repository calls
+        verify(documentRepository).findDocumentById(Integer.parseInt(documentId));
+    }
+
     @Test
     void givenKeywordAndDepartmentId_whenSearchDocuments_thenReturnMatchingDocuments() {
         // Given
