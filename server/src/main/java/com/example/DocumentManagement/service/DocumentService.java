@@ -127,9 +127,13 @@ public class DocumentService extends SupportFunction {
     public MessageResponse deleteDocumentById(String idFromPathVariable){
         int id = checkRequest(idFromPathVariable);
 
+        DocumentEntity documentEntity = documentRepository.findDocumentById(id);
+        if (documentEntity == null) {
+            throw new NotFoundException("Document not found!");
+        }
+
         LocalDateTime currentDateTime = LocalDateTime.now();
         Date deleteTime = new Date(Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant()).getTime());
-
         documentRepository.deleteDocumentById(Boolean.TRUE,deleteTime,id);
 
         return new MessageResponse("Delete Document SuccessFully!");
@@ -138,6 +142,11 @@ public class DocumentService extends SupportFunction {
     public ListResponse getDocumentsByDepartmentId(String idFromPathVariable) {
         int id = checkRequest(idFromPathVariable);
         List<DocumentEntity> documents = documentRepository.findDocumentsByDepartmentId(id);
+
+        if (documents == null) {
+            throw new NotFoundException("Document not found!");
+        }
+
         return getListResponse(documents);
     }
 

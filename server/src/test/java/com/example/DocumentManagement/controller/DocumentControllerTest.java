@@ -144,8 +144,9 @@ public class DocumentControllerTest {
         Assertions.assertEquals(0, result.getBody().getListContent().size());
         verify(documentService).getAllDocuments();
     }
+
     @Test
-    void givenNewDocumentData_whenCreateDocuments_thenReturnOK() {
+    void givenNewDocumentDataWithTrueDepartmentId_whenCreateDocuments_thenReturnOK() {
         // Given
         CreateDocumentRequest newDocumentData = new CreateDocumentRequest("doc 1", "description for doc 1", "http://example.com/document/1", "Version 1.0.0", "note for doc 1", "1");
         MessageResponse expectedResponse = new MessageResponse("Create SuccessFully!");
@@ -161,7 +162,41 @@ public class DocumentControllerTest {
     }
 
     @Test
-    void givenDocumentsInDepartment_whenFindAllDocumentsByDepartmentId_thenReturnOK() {
+    void givenNewDocumentDataWithWrongDepartmentId_whenCreateDocuments_thenException() {
+        // Given
+        CreateDocumentRequest newDocumentData = new CreateDocumentRequest("doc 1", "description for doc 1", "http://example.com/document/1", "Version 1.0.0", "note for doc 1", "1");
+        NotFoundException expectedException = new NotFoundException("Department not found!");
+        when(documentService.createDocument(newDocumentData)).thenThrow(expectedException);
+
+        // When
+        Exception exception = assertThrows(NotFoundException.class, () ->{
+            documentController.createDocument(newDocumentData);
+        });
+
+        // Then
+        Assertions.assertEquals(expectedException, exception);
+        verify(documentService).createDocument(newDocumentData);
+    }
+
+    @Test
+    void givenDocumentsWithWrongDepartmentId_whenFindAllDocumentsByDepartmentId_thenException() {
+        // Given
+        String departmentId = "-1";
+        NotFoundException expectedException = new NotFoundException("Department not found!");
+        when(documentService.getDocumentsByDepartmentId(departmentId)).thenThrow(expectedException);
+
+        // When
+        Exception exception = assertThrows(NotFoundException.class, () ->{
+            documentService.getDocumentsByDepartmentId(departmentId);
+        });
+
+        // Then
+        Assertions.assertEquals(expectedException, exception);
+        verify(documentService).getDocumentsByDepartmentId(departmentId);
+    }
+
+    @Test
+    void givenDocumentsWithTrueDepartmentId_whenFindAllDocumentsByDepartmentId_thenReturnOK() {
         // Given
         String departmentId = "1";
         DocumentEntity document1 = new DocumentEntity("doc 1", "description for doc 1", Date.valueOf("2023-11-10"), false, null, "1");
@@ -179,7 +214,7 @@ public class DocumentControllerTest {
     }
 
     @Test
-    void givenNoDocumentsInDepartment_whenFindAllDocumentsByDepartmentId_thenReturnOK() {
+    void givenZeroDocumentsWithTrueDepartmentId_whenFindAllDocumentsByDepartmentId_thenReturnOK() {
         // Given
         String departmentId = "1";
         ListResponse expectedResponse = new ListResponse(List.of());
@@ -195,20 +230,38 @@ public class DocumentControllerTest {
     }
 
     @Test
-    void givenNoDepartment_whenFindAllDocumentsByDepartmentId_thenReturnOK() {
+    void givenTrueDocumentId_whenDeleteDocumentById_thenReturnOK() {
         // Given
-        String departmentId = "1";
-        ListResponse expectedResponse = new ListResponse(null);
-        when(documentService.getDocumentsByDepartmentId(departmentId)).thenReturn(expectedResponse);
+        String documentId = "1";
+        MessageResponse expectedResponse = new MessageResponse("Create SuccessFully!");
+        when(documentService.deleteDocumentById(documentId)).thenReturn(expectedResponse);
 
         // When
-        ResponseEntity<?> responseEntity = documentController.getDocumentsByDepartmentId(departmentId);
+        ResponseEntity<?> responseEntity = documentController.deleteDocumentById(documentId);
 
         // Then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(expectedResponse, responseEntity.getBody());
-        verify(documentService).getDocumentsByDepartmentId(departmentId);
+        verify(documentService).deleteDocumentById(documentId);
     }
+
+    @Test
+    void givenWrongDocumentId_whenDeleteDocumentById_thenException() {
+        // Given
+        String documentId = "1";
+        NotFoundException expectedException = new NotFoundException("Document not found!");
+        when(documentService.deleteDocumentById(documentId)).thenThrow(expectedException);
+
+        // When
+        Exception exception = assertThrows(NotFoundException.class, () ->{
+            documentController.deleteDocumentById(documentId);
+        });
+
+        // Then
+        Assertions.assertEquals(expectedException, exception);
+        verify(documentService).deleteDocumentById(documentId);
+    }
+
     @Test
     void givenValidDocumentId_whenUpdateDocument_thenReturnOK() {
         // Given
