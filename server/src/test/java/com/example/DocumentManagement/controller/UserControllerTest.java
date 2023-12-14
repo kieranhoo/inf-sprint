@@ -89,25 +89,6 @@ public class UserControllerTest {
     }
     
     @Test
-    void testGetAllUsers_EmptyUser2() {
-        // Given
-        UsersEntity user1 = new UsersEntity();
-        UsersEntity user2 = new UsersEntity();
-       
-
-        ListResponse expectedResponse = new ListResponse(Arrays.asList(user1, user2));
-    
-        when(usersService.getAllUsers()).thenReturn(expectedResponse);
-    
-        // When
-        ResponseEntity<ListResponse> responseEntity = userController.getAllUsers();
-    
-        // Then
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-        assertEquals(expectedResponse, responseEntity.getBody());
-    }
-    
-    @Test
     void testGetUserById_ValidUserID() {
         // Given
         String userId = "1";
