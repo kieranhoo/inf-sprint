@@ -32,7 +32,7 @@ import static org.mockito.Mockito.*;
 public class MyUserDetails {
 
     /*
-    * TESTING STRATEGY: BLACK-BOX DECISION TABLE TESTING
+    * TESTING STRATEGY: Equivalence class partitioning technique
     *
     * 1. loadUserByUsername
     * - Input: String username
