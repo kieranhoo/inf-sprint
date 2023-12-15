@@ -3,6 +3,7 @@ package com.example.DocumentManagement.service;
 import com.example.DocumentManagement.entity.DepartmentEntity;
 import com.example.DocumentManagement.entity.DocumentEntity;
 import com.example.DocumentManagement.entity.VersionEntity;
+import com.example.DocumentManagement.exception.BadRequestException;
 import com.example.DocumentManagement.exception.NotFoundException;
 import com.example.DocumentManagement.repository.DepartmentRepository;
 import com.example.DocumentManagement.repository.DocumentRepository;
@@ -124,7 +125,7 @@ public class DocumentServiceTest {
     }
 
     @Test
-    void givenWrongId_whenFindDocumentById_thenReturnException() {
+    void givenWrongId_whenFindDocumentById_thenReturnNotFoundException() {
         // Given
         when(documentRepository.findDocumentById(2)).thenReturn(null);
 
@@ -137,7 +138,30 @@ public class DocumentServiceTest {
         // Verify repository calls
         verify(documentRepository).findDocumentById(2);
     }
+    @Test
+    void givenNullId_whenFindDocumentById_thenReturnBadRequestException() {
+        // Given
 
+        // When
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class, () -> {
+            documentService.getDocumentById(null);
+        });
+        // Then
+        Assertions.assertEquals("Request must be a Integer", exception.getMessage());
+        verifyNoMoreInteractions(documentRepository, versionRepository, departmentRepository);
+    }
+    @Test
+    void givenInvalidId_whenFindDocumentById_thenReturnBadRequestException() {
+        // Given
+
+        // When
+        BadRequestException exception = Assertions.assertThrows(BadRequestException.class, () -> {
+            documentService.getDocumentById("");
+        });
+        // Then
+        Assertions.assertEquals("Request must be a Integer", exception.getMessage());
+        verifyNoMoreInteractions(documentRepository, versionRepository, departmentRepository);
+    }
     @Test
     void givenNewDocumentDataWithTrueDepartmentId_whenCreateDocuments_thenReturnMessageSuccessfully() {
         // Given
